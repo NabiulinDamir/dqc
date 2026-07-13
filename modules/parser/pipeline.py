@@ -15,10 +15,11 @@ except ImportError:  # pragma: no cover - fallback for direct execution
 
 
 def parse_document(file_path: str | Path) -> List[Any]:
-    """Черный ящик парсера: на вход — документ, на выход — список блоков."""
+    """Черный ящик парсера: принимает документ на вход и возвращает список блоков."""
     file_path = Path(file_path)
     extension = file_path.suffix.lower()
 
+    # Выбор подходящего парсера в зависимости от формата файла
     if extension == ".docx":
         parser = DocxParser()
         blocks = parser.parse(str(file_path))

@@ -9,17 +9,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+# Импорт основных модулей системы
 from modules.parser.pipeline import parse_document
 from modules.classification.pipeline import classify_blocks
 
 
 def save_json(path: Path, data):
+    """Сохраняет данные в JSON-файл с созданием папки при необходимости."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 def main():
+    """Точка входа: парсинг документа, классификация блоков и сохранение результатов."""
     parser = argparse.ArgumentParser(description="Главный запускной файл системы")
     parser.add_argument(
         "file_path",
@@ -52,10 +55,13 @@ def main():
     if not input_path.exists():
         raise FileNotFoundError(f"Файл не найден: {input_path}")
 
+    # 1. Извлечение блоков из документа
     blocks = parse_document(input_path)
+
+    # 2. Классификация блоков выбранным способом
     classified_blocks = classify_blocks(blocks, method=args.classification)
 
-    
+    # 3. Сохранение результатов в JSON
     save_json(Path(args.output), blocks)
     save_json(Path(args.classification_output), classified_blocks)
 
