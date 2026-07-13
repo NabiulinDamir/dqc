@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Optional
 
 @dataclass
 class ClassificationResult:
-    index: int
     label: str
     confidence: float = 0.0
     metadata: Optional[Dict[str, Any]] = None
@@ -50,6 +49,6 @@ class BaseClassifier(ABC):
         return ""
 
     @abstractmethod
-    def classify(self, blocks: List[Dict[str, Any]]) -> List[ClassificationResult]:
-        """Классифицирует список блоков и возвращает результаты."""
+    def classify(self, previous_block: Dict[str, Any], current_block: Dict[str, Any]) -> ClassificationResult:
+        """Классифицирует пару блоков и возвращает результат для текущего."""
         raise NotImplementedError

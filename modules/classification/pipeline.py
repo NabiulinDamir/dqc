@@ -1,56 +1,42 @@
 from typing import Any, Dict, List
 
 try:
-    from .base import ClassificationResult
     from .rule_based import RuleBasedClassifier
     from .neural import NeuralClassifier
 except ImportError:  # pragma: no cover - fallback for direct execution
-    from base import ClassificationResult
     from rule_based import RuleBasedClassifier
     from neural import NeuralClassifier
 
 
-def classify_blocks(
-    blocks: List[Dict[str, Any]],
-    method: str = "rule_based",
-) -> List[Dict[str, Any]]:
-    """Общий интерфейс классификации блоков документа.
+def _get_classifier(method: str):
+    return NeuralClassifier() if method == "neural" else RuleBasedClassifier()
 
-    Args:
-        blocks: список страниц после парсинга или список блоков.
-        method: один из вариантов: "rule_based" или "neural".
 
-    Returns:
-        Структура, похожая на входную, но с полем classified_type у каждого блока.
-    """
-    # Выбор подхода классификации: правилоориентированный или нейросетевой
-    if method == "neural":
-        classifier = NeuralClassifier()
-    else:
-        classifier = RuleBasedClassifier()
+def classify_pair(previous_block: Dict[str, Any], current_block: Dict[str, Any], method: str = "rule_based", classifier=None) -> str:
+    # Классифицируем пару блоков: предыдущий и текущий.
+    classifier = classifier or _get_classifier(method)
+    return classifier.classify(previous_block, current_block).label
 
+
+def classify_blocks(blocks: List[Dict[str, Any]], method: str = "rule_based") -> List[Dict[str, Any]]:
+    # Классифицируем все блоки в документе попарно.
     if not blocks:
         return []
 
-    # Если вход уже имеет структуру "страница -> блоки", классифицируем каждый блок внутри страницы
-    if isinstance(blocks[0], dict) and isinstance(blocks[0].get("blocks"), list):
-        enriched_pages: List[Dict[str, Any]] = []
-        for page in blocks:
-            enriched_page = dict(page)
-            enriched_page["blocks"] = []
-            for block in page.get("blocks", []):
-                result = classifier.classify([block])[0]
-                enriched_block = dict(block)
-                enriched_block["classified_type"] = result.label
-                enriched_page["blocks"].append(enriched_block)
-            enriched_pages.append(enriched_page)
-        return enriched_pages
-
-    results = classifier.classify(blocks)
+    classifier = _get_classifier(method)
     enriched_blocks: List[Dict[str, Any]] = []
-    for block, result in zip(blocks, results):
+    previous_block = None
+
+    for block in blocks:
         enriched_block = dict(block)
-        enriched_block["classified_type"] = result.label
+        if previous_block is None:
+            # для первого блока передаем эо же в качестве предыдущего
+            enriched_block["classified_type"] = classifier.classify(block, block).label
+        else:
+            enriched_block["classified_type"] = classify_pair(previous_block, block, method="", classifier=classifier)
         enriched_blocks.append(enriched_block)
+        previous_block = enriched_block
 
     return enriched_blocks
+
+

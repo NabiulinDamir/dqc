@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import List, Any
+from typing import Any, Dict, List
 
 PARSER_DIR = Path(__file__).resolve().parent
 if str(PARSER_DIR) not in sys.path:
@@ -14,21 +14,32 @@ except ImportError:  # pragma: no cover - fallback for direct execution
     from parsers.pdf_parser import PdfParser
 
 
+def _normalize_block(block: Any) -> Dict[str, Any]:
+    if hasattr(block, "to_dict"):
+        return dict(block.to_dict())
+    if isinstance(block, dict):
+        return dict(block)
+    return {"content": str(block), "type": "unknown"}
+
+
 def parse_document(file_path: str | Path) -> List[Any]:
-    """Черный ящик парсера: принимает документ на вход и возвращает список блоков."""
     file_path = Path(file_path)
     extension = file_path.suffix.lower()
 
-    # Выбор подходящего парсера в зависимости от формата файла
-    if extension == ".docx":
-        parser = DocxParser()
-        blocks = parser.parse(str(file_path))
-    elif extension == ".pdf":
-        parser = PdfParser()
-        blocks = parser.parse(str(file_path))
+    # if extension == ".docx":
+    #     blocks = DocxParser().parse(str(file_path))
+    if extension == ".pdf":
+        parsed_document = PdfParser().parse(str(file_path))
     else:
         raise ValueError(f"Формат файла {extension} не поддерживается")
 
-    if isinstance(blocks, list) and blocks and hasattr(blocks[0], "to_dict"):
-        return [block.to_dict() for block in blocks]
-    return blocks
+    # if isinstance(blocks, list) and blocks and isinstance(blocks[0], dict) and isinstance(blocks[0].get("blocks"), list):
+    #     return [
+    #         {
+    #             **page,
+    #             "blocks": [_normalize_block(raw_block) for raw_block in page.get("blocks", [])],
+    #         }
+    #         for page in blocks
+    #     ]
+
+    return parsed_document

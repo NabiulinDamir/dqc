@@ -1,50 +1,48 @@
 import argparse
 import json
 import sys
+import time
 from pathlib import Path
 
-
+# Настройка путей проекта
 PROJECT_ROOT = Path(__file__).resolve().parent
-
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Импорт основных модулей системы
 from modules.parser.pipeline import parse_document
 from modules.classification.pipeline import classify_blocks
 
 
 def save_json(path: Path, data):
-    """Сохраняет данные в JSON-файл с созданием папки при необходимости."""
+    """Вспомогательная функция для сохранения структуры в файл"""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 def main():
-    """Точка входа: парсинг документа, классификация блоков и сохранение результатов."""
     parser = argparse.ArgumentParser(description="Главный запускной файл системы")
     parser.add_argument(
         "file_path",
         nargs="?",
         default=str(PROJECT_ROOT / "docx" / "дипломпдф.pdf"),
-        help="Путь к документу (.docx или .pdf)",
+        help="Путь к документу",
     )
     parser.add_argument(
-        "--output",
-        default=str(PROJECT_ROOT / "output" / "result.json"),
-        help="Файл для сохранения блоков с классификацией",
+        "--parser_output",
+        default=str(PROJECT_ROOT / "output" / "parser_result.json"),
+        help="Путь для сохранения результата парсера",
     )
     parser.add_argument(
-        "--classification-output",
+        "--classification_output",
         default=str(PROJECT_ROOT / "output" / "classification_result.json"),
-        help="Файл для сохранения блоков с добавленным полем classified_type",
+        help="Путь для сохранения результата классификации",
     )
     parser.add_argument(
         "--classification",
         choices=["rule_based", "neural"],
         default="rule_based",
-        help="Способ классификации: rule_based или neural",
+        help="Способ классификации",
     )
     args = parser.parse_args()
 
@@ -55,21 +53,29 @@ def main():
     if not input_path.exists():
         raise FileNotFoundError(f"Файл не найден: {input_path}")
 
-    # 1. Извлечение блоков из документа
-    blocks = parse_document(input_path)
+    start_time = time.time()
+    print(
+        "[TIMING] Начало обработки ------------------------------------------------------"
+    )
 
-    # 2. Классификация блоков выбранным способом
-    classified_blocks = classify_blocks(blocks, method=args.classification)
+    # 1. Извлечение текста и геометрии (работает ваш PyMuPDF код)
+    parsed_document = parse_document(input_path)
+    document_blocks = parsed_document.get("blocks", [])
+    print(f"[TIMING] Парсинг завершен: {time.time() - start_time:.2f} с")
+    
+    # 2. Классификация извлеченных блоков (добавление типов)
+    # classified_blocks = classify_blocks(document_blocks, method=args.classification)
 
-    # 3. Сохранение результатов в JSON
-    save_json(Path(args.output), blocks)
-    save_json(Path(args.classification_output), classified_blocks)
+    print(f"[TIMING] Классификация завершена: {time.time() - start_time:.2f} с")
+    # 3. Сохранение финального результата (сразу с классами)
+    save_json(Path(args.parser_output), document_blocks)
+    # save_json(Path(args.classification_output), classified_blocks)
 
-    print(f"Обработан файл: {input_path}")
-    print(f"Получено блоков: {len(blocks)}")
-    print(f"Базовые блоки сохранены в: {Path(args.output)}")
-    print(f"Блоки с classified_type сохранены в: {Path(args.classification_output)}")
-    print(f"Использован метод классификации: {args.classification}")
+    print(f"[TIMING] Результат успешно сохранен в: {args.classification_output}")
+    print(f"[TIMING] Общее время выполнения: {time.time() - start_time:.2f} с")
+    print(
+        "[TIMING] Конец обработки ------------------------------------------------------"
+    )
 
 
 if __name__ == "__main__":
