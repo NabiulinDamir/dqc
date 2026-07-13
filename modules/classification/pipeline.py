@@ -14,7 +14,7 @@ def classify_blocks(
     blocks: List[Dict[str, Any]],
     method: str = "rule_based",
 ) -> List[Dict[str, Any]]:
-    """Общий интерфейс классификации.
+    """Общий интерфейс классификации блоков документа.
 
     Args:
         blocks: список страниц после парсинга или список блоков.
@@ -23,6 +23,7 @@ def classify_blocks(
     Returns:
         Структура, похожая на входную, но с полем classified_type у каждого блока.
     """
+    # Выбор подхода классификации: правилоориентированный или нейросетевой
     if method == "neural":
         classifier = NeuralClassifier()
     else:
@@ -31,6 +32,7 @@ def classify_blocks(
     if not blocks:
         return []
 
+    # Если вход уже имеет структуру "страница -> блоки", классифицируем каждый блок внутри страницы
     if isinstance(blocks[0], dict) and isinstance(blocks[0].get("blocks"), list):
         enriched_pages: List[Dict[str, Any]] = []
         for page in blocks:
