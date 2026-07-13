@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from .base import BaseClassifier, ClassificationResult
 
@@ -13,24 +13,17 @@ class NeuralClassifier(BaseClassifier):
     def __init__(self):
         super().__init__(name="neural")
 
-    def classify(self, blocks: List[Dict[str, Any]]) -> List[ClassificationResult]:
-        results: List[ClassificationResult] = []
-        for index, block in enumerate(blocks, start=1):
-            text = self.extract_text(block)
-            if not text:
-                label = "empty"
-                confidence = 0.0
-            else:
-                label = "neural_predicted"
-                confidence = 0.5
+    def classify(self, previous_block: Dict[str, Any], current_block: Dict[str, Any]) -> ClassificationResult:
+        text = self.extract_text(current_block)
+        if not text:
+            label = "empty"
+            confidence = 0.0
+        else:
+            label = "neural_predicted"
+            confidence = 0.5
 
-            results.append(
-                ClassificationResult(
-                    index=index,
-                    label=label,
-                    confidence=confidence,
-                    metadata={"source_type": block.get("type", "unknown")},
-                )
-            )
-
-        return results
+        return ClassificationResult(
+            label=label,
+            confidence=confidence,
+            metadata={"source_type": current_block.get("type", "unknown")}
+        )
