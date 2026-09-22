@@ -4,6 +4,7 @@ from typing import List
 
 from models.document_block import BlockType, DocumentBlock
 
+from modules.document import BlockParsedType, BlockClassifiedType
 
 class DocxParser:
     def parse(self, file_path: str) -> List[DocumentBlock]:

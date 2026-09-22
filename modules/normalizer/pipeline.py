@@ -4,10 +4,10 @@ from typing import Any, Dict, List
 from .rule_based import RuleBasedClassifier
 from .ml_classifer import MlClassifier
 
-from modules.document import Document, DocumentBlock, BlockParsedType, BlockClassifiedType
+
 # from .base import create_dictionary, TrainDocumentInfo
 
-def get_classifier(method: str):
+def _get_classifier(method: str):
     match(method):
         case "ml":
             return MlClassifier()
@@ -26,12 +26,12 @@ def get_classifier(method: str):
 #     return classifier.classify(blocks)
 
 
-def classify_blocks(blocks: List[DocumentBlock], method: str) -> List[DocumentBlock]:
+def classify_blocks(blocks: List[Dict[str, Any]], method: str) -> List[Dict[str, Any]]:
     # Классифицируем все блоки в документе попарно.
     if not blocks:
         return []
 
-    classifier = get_classifier(method)
+    classifier = _get_classifier(method)
 
     classifed_blocks = classifier.classify(blocks)
 
@@ -60,7 +60,7 @@ def classify_blocks(blocks: List[DocumentBlock], method: str) -> List[DocumentBl
     return classifed_blocks
 
 
-def train_ml_classifer(blocks: List[DocumentBlock]):
+def train_ml_classifer(blocks: List[Dict[str, Any]]):
     print("Начало обучения")
-    classifier = get_classifier("ml")
+    classifier = _get_classifier("ml")
     classifier.train(blocks)
