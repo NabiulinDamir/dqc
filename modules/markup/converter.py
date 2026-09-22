@@ -1,8 +1,19 @@
 from typing import List, Dict, Any
 from modules.markup.base import Markup
 
+from ..document import (
+    BlockParsedType,
+    BlockClassifiedType,
+    DocumentBlock,
+    ParsedBlockData,
+    BlockTypography,
+    BlockGeometry,
+    PageParameters,
+    BlockParsedType,
+    NormalizeBlockData,
+)
 
-def blocks_to_markup(classified_blocks: List[Dict[str, Any]]) -> List[Markup]:
+def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
     """
     Преобразует список классифицированных блоков в инструкции разметки.
     Пропускает блоки без геометрии (например, 'empty') и без результата классификации.
@@ -11,8 +22,8 @@ def blocks_to_markup(classified_blocks: List[Dict[str, Any]]) -> List[Markup]:
 
     for block in classified_blocks:
         # 1. Проверяем наличие обязательных полей
-        label = block.get("classification_result")
-        geometry = block.get("geometry")
+        label = block.classified_type
+        geometry = block.parsed_block_data.geometry
 
         if not label or not geometry:
             continue
@@ -27,12 +38,12 @@ def blocks_to_markup(classified_blocks: List[Dict[str, Any]]) -> List[Markup]:
         # 3. Создаем инструкцию разметки
         markups.append(
             Markup(
-                page=block.get("page", 1),
+                page=block.parsed_block_data.page_parameters.number,
                 geometry={
-                    "left_mm": float(geometry["left_mm"]),
-                    "top_mm": float(geometry["top_mm"]),
-                    "right_mm": float(geometry["right_mm"]),
-                    "bottom_mm": float(geometry["bottom_mm"]),
+                    "left_mm": float(geometry.left_mm),
+                    "top_mm": float(geometry.top_mm),
+                    "right_mm": float(geometry.right_mm),
+                    "bottom_mm": float(geometry.bottom_mm),
                 },
                 label=label,
             )

@@ -46,7 +46,13 @@ class PageParameters:
     height_mm: Optional[float] = None  # Высота страницы
 
 @dataclass
-class ImageBlockData:
+class TextBlockData:
+    # Текст
+    text: Optional[str] = None # Текст блока
+
+@dataclass
+class ImageBlockData:  
+    # Картинки
     saved_path: Optional[str] = None
     width_mm: Optional[float] = None  # Ширина картинки
     height_mm: Optional[float] = None  # Высота картинки
@@ -54,7 +60,7 @@ class ImageBlockData:
 
 @dataclass
 class ParsedBlockData: 
-    data: Optional[str | ImageBlockData] = None  # Данные блока
+    data: Optional[TextBlockData | ImageBlockData] = None  # Данные блока
     typography: Optional[BlockTypography] = None # Типографические параметры
     geometry: Optional[BlockGeometry] = None # Геометрические параметры
     page_parameters: Optional[PageParameters] = None # Данные страницы
@@ -62,23 +68,24 @@ class ParsedBlockData:
 @dataclass
 class NormalizeBlockData:
     # Тектовые
-    text: List  # Текстовый вектор
+    text: Optional[List] = None  # Текстовый вектор
     # Типографические
-    has_italic: int  # Наличие курсива
-    has_blood: int  # Наличие жирного начертания
-    relative_font_size: float  # Размер шрифта относительно других блоков
-    relative_margin_top: float  # Относительный отступ снизу
-    relative_margin_bottom: float  # Относительный отступ сверху
+    has_italic: Optional[int] = None  # Наличие курсива
+    has_blood: Optional[int] = None  # Наличие жирного начертания
+    relative_font_size: Optional[float] = None  # Размер шрифта относительно других блоков
+    relative_margin_top: Optional[float] = None  # Относительный отступ снизу
+    relative_margin_bottom: Optional[float] = None  # Относительный отступ сверху
     # Геометрические
-    relative_space_left: float  # Относительный отступ слева
-    relative_height: float  # Относительная высота
-    line_position: int  # Позиция в строке
+    relative_space_left: Optional[float] = None  # Относительный отступ слева
+    relative_height: Optional[float] = None  # Относительная высота
+    line_position: Optional[int] = None  # Позиция в строке
     # Контекстные
-    prev_block_style_similarity: float  # Относительная схожесть с предыдущим блоком по стилевым параметрам
-    prev_block_type: List  # Вектор типа предыдущего блока [0, 1, 0, 0] - Заголовок
+    prev_block_style_similarity: Optional[float] = None  # Относительная схожесть с предыдущим блоком по стилевым параметрам
+    prev_block_type: Optional[List] = None  # Вектор типа предыдущего блока [0, 1, 0, 0] - Заголовок
 
 @dataclass
 class DocumentBlock:
+    id: Optional[int] = None
     # error: Optional[BlockError] = None
     classified_type: Optional[BlockClassifiedType] = None # Классифицированный тип блока
     parseed_type: Optional[BlockParsedType] = None # Реальный тип блока
