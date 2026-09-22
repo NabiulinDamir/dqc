@@ -7,11 +7,11 @@
 
 from .base import BaseClassifier, ClassificationResult
 from .rule_based import RuleBasedClassifier
-from .neural import NeuralClassifier
+from .ml_classifer import MlClassifier
 
 __all__ = [
     "BaseClassifier",
     "ClassificationResult",
     "RuleBasedClassifier",
-    "NeuralClassifier",
+    "MlClassifier",
 ]

@@ -1,17 +1,38 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, asdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Literal
+import re
 
+# import joblib
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# import pymorphy2
+# from nltk.tokenize import WordPunctTokenizer
+# from nltk.corpus import stopwords
 
 @dataclass
 class ClassificationResult:
-    label: str
+    label: Literal[
+        "header",
+        "text",
+        "image",
+        "table",
+        "image_capture",
+        "table_capture",
+        "number_list",
+        "marker_list",
+        "empty",
+    ]
     confidence: float = 0.0
     metadata: Optional[Dict[str, Any]] = None
+    normalise_block: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
+# class TrainDocumentInfo: 
+#     path: str
+#     type: str
+#     rules: str
 
 class BaseClassifier(ABC):
     """Абстрактная основа для всех классификаторов."""
@@ -48,7 +69,12 @@ class BaseClassifier(ABC):
 
         return ""
 
-    @abstractmethod
-    def classify(self, previous_block: Dict[str, Any], current_block: Dict[str, Any]) -> ClassificationResult:
-        """Классифицирует пару блоков и возвращает результат для текущего."""
-        raise NotImplementedError
+    # @abstractmethod
+    # def classify(self, previous_block: Dict[str, Any], current_block: Dict[str, Any]) -> ClassificationResult:
+    #     """Классифицирует пару блоков и возвращает результат для текущего."""
+    #     raise NotImplementedError
+
+    
+
+
+    

@@ -2,31 +2,28 @@ import fitz
 import json
 import os
 
+from ...document import BlockParsed, BlockClassified, DocumentBlock, BlockData, BlockTypography, BlockGeometry, PageParameters
 
 class PdfParser:
 
     def __init__(self):
         self.pt_to_mm = 25.4 / 72
+        self.HEADER_ZONE_LIMIT_MM = 15.0
+        self.FOOTER_ZONE_LIMIT_MM = 270.0
 
     def parse(self, pdf_path: str):
         """Парсит PDF на текстовые блоки, таблицы и изображения в порядке чтения."""
         doc = fitz.open(pdf_path)
+
+        # with open("doc_result_parser.json", "w", encoding="utf-8") as f:
+        #     json.dump(doc , f, ensure_ascii=False, indent=4)
 
         parsed_document = {
             "blocks": [],
             "pages_info": [],
         }
 
-        # parsed_document = {
-        #     "blocks": [
-        #         "line":{
-        #             "spacing": 0-0
-
-        #         },
-        #     ]
-        #     "pages_info": [],
-        # }
-
+        limit = 1
         idx = 0  # Индекс блока в пределах всего документа
         for page_num in range(len(doc)):
             page = doc[page_num]
@@ -35,10 +32,28 @@ class PdfParser:
 
             parsed_document["pages_info"].append(
                 {
-                    "page": page_num + 1,
-                    "page_size_mm": (round(page_width_mm, 1), round(page_height_mm, 1)),
+                    "number": page_num + 1,
+                    "width_mm": round(page_width_mm, 1),
+                    "height_mm": round(page_height_mm, 1),
                 }
             )
+
+            tmp_page_info = {
+                "number": page_num + 1,
+                
+                "width_mm": round(page_width_mm, 1),
+                "height_mm": round(page_height_mm, 1),
+
+                # "text_block_count": 0,
+                
+                # "avg_font_size": None,
+                # "avg_line_spacing": None,
+                # "avg_block_height": None,
+            }
+
+            tmp_font_sizes = []
+            tmp_line_top_spacings = []
+            tmp_line_bottom_spacings = []
 
             # 1. Извлекаем текстовые блоки
             page_dict = page.get_text("dict")
@@ -46,6 +61,8 @@ class PdfParser:
 
             page_blocks = []
             tmp_text = ""
+
+            prev_line_y = 0
             for block in blocks:
                 if "lines" not in block:
                     continue
@@ -56,16 +73,17 @@ class PdfParser:
                 cur_size = None
                 cur_bbox = None
                 # cur_line_spacings = []  # Список интервалов для расчета среднего
-                prev_line_y = None  # Y-координата предыдущей строки
+                # Y-координата предыдущей строки
                 line_spacing_for_block = 0.0
+                height_difference = 0
+
+                footer_blocks = []
 
                 for line in block["lines"]:
-                    line_top_y = line["bbox"][1] * self.pt_to_mm
 
-                    current_spacing = 0.0
-                    if prev_line_y is not None:
-                        current_spacing = abs(line_top_y - prev_line_y)
-                    line_spacing_for_block = current_spacing
+                    # height_difference = abs(line_top_y - prev_line_y)
+
+                    # line_spacing_for_block = current_spacing
 
                     for span in line["spans"]:
                         text = span["text"]
@@ -75,7 +93,14 @@ class PdfParser:
 
                         f_name = span["font"]
                         f_size = round(span["size"], 1)
+
+                        tmp_font_sizes.append(f_size)
+
                         s_bbox = [c * self.pt_to_mm for c in span["bbox"]]
+                        t_color_hex = self.getHex(span.get("color", 0))
+                        line_top_y = line["bbox"][1] * self.pt_to_mm
+                        t_height = line["bbox"][3] * self.pt_to_mm - line["bbox"][1] * self.pt_to_mm
+                        height_difference = abs(line_top_y - prev_line_y)
 
                         # Проверяем критерии разрыва БЛОКА
                         is_style_changed = False
@@ -83,19 +108,14 @@ class PdfParser:
                         if cur_font is not None:
                             # 1. Смена шрифта/размера
                             if cur_font != f_name or abs(cur_size - f_size) > 0.1:
+                                # if cur_font
                                 is_style_changed = True
 
-                            elif current_spacing > 0.5:
+                            # 2. Смена высоты строки
+                            elif height_difference > (t_height * 0.5):
                                 is_style_changed = True
 
                         if is_style_changed:
-                            # Сохраняем ПРЕДЫДУЩИЙ блок
-                            # avg_spacing = 0.0
-                            # if cur_line_spacings:
-                            #     avg_spacing = round(
-                            #         sum(cur_line_spacings) / len(cur_line_spacings), 2
-                            #     )
-
                             page_blocks.append(
                                 {
                                     "type": "text",
@@ -105,23 +125,22 @@ class PdfParser:
                                         "typography": {
                                             "font": cur_font,
                                             "size_pt": cur_size,
-                                            "avg_line_spacing_mm": round(line_spacing_for_block, 2),
+                                            "text_color": t_color_hex,
+                                            "height_difference": height_difference,
                                         },
                                     },
                                     "geometry": {
-                                        "left_mm": round(cur_bbox[0], 2),
-                                        "top_mm": round(cur_bbox[1], 2),
-                                        "right_mm": round(cur_bbox[2], 2),
-                                        "bottom_mm": round(cur_bbox[3], 2),
+                                        "left_mm": int(cur_bbox[0]),
+                                        "top_mm": int(cur_bbox[1]),
+                                        "right_mm": int(cur_bbox[2]),
+                                        "bottom_mm": int(cur_bbox[3]),
+
+                                        "height_mm": t_height,
                                     },
                                 }
                             )
-
-                            # Сброс
                             cur_text = ""
                             cur_bbox = None
-                            # cur_line_spacings = []
-                            # prev_line_y = None  # Сбрасываем Y, т.к. новая строка - первая в новом блоке
 
                         # Добавляем текст и обновляем состояние
                         cur_text += text
@@ -137,20 +156,10 @@ class PdfParser:
                             cur_bbox[2] = max(cur_bbox[2], s_bbox[2])
                             cur_bbox[3] = max(cur_bbox[3], s_bbox[3])
 
-                        # Добавляем интервал ТОЛЬКО при переходе на новую строку
-                        # if prev_line_y is not None and abs(prev_line_y - line_top_y) > 0.1:
-                        #     if current_spacing > 0:
-                        #         cur_line_spacings.append(current_spacing)
-
-                    prev_line_y = line_top_y
+                        prev_line_y = line_top_y
 
                 # Сохраняем ПОСЛЕДНИЙ блок
                 if cur_text.strip():
-                    # avg_spacing = 0.0
-                    # if cur_line_spacings:
-                    #     avg_spacing = round(
-                    #         sum(cur_line_spacings) / len(cur_line_spacings), 2
-                    #     )
                     page_blocks.append(
                         {
                             "type": "text",
@@ -160,17 +169,23 @@ class PdfParser:
                                 "typography": {
                                     "font": cur_font,
                                     "size_pt": cur_size,
-                                    "avg_line_spacing_mm": round(line_spacing_for_block, 2),
+                                    "text_color": t_color_hex,
                                 },
                             },
                             "geometry": {
-                                "left_mm": round(cur_bbox[0], 2),
-                                "top_mm": round(cur_bbox[1], 2),
-                                "right_mm": round(cur_bbox[2], 2),
-                                "bottom_mm": round(cur_bbox[3], 2),
+                                "left_mm": int(cur_bbox[0]),
+                                "top_mm": int(cur_bbox[1]),
+                                "right_mm": int(cur_bbox[2]),
+                                "bottom_mm": int(cur_bbox[3]),
+                                "huihuihui": None
                             },
                         }
                     )
+
+            # Докидываю среднее значение размера шрифта на страницу, если есть данные
+
+            page_blocks.extend(footer_blocks)
+
             # if "веб сайтов примерно одинаковые" in tmp_text:
             #     print (tmp_text)
             # tmp_text = ""
@@ -256,17 +271,17 @@ class PdfParser:
                                                 if cell_value is not None
                                                 else ""
                                             ),
-                                            "blocks": [],  # СЮДА ПЕРЕМЕСТЯТСЯ ВАШИ ТЕКСТОВЫЕ БЛОКИ
+                                            "blocks": [],  # СЮДА ПЕРЕМЕСТЯТСЯ ТЕКСТОВЫЕ БЛОКИ
                                             "_bbox_mm": cell_bbox_mm,  # Временное поле для фильтрации
                                         }
                                     )
 
                             bbox = tab.bbox
                             structured_table["geometry"] = {
-                                "left_mm": round(bbox[0] * self.pt_to_mm, 2),
-                                "top_mm": round(bbox[1] * self.pt_to_mm, 2),
-                                "right_mm": round(bbox[2] * self.pt_to_mm, 2),
-                                "bottom_mm": round(bbox[3] * self.pt_to_mm, 2),
+                                "left_mm": int(bbox[0] * self.pt_to_mm),
+                                "top_mm": int(bbox[1] * self.pt_to_mm),
+                                "right_mm": int(bbox[2] * self.pt_to_mm),
+                                "bottom_mm": int(bbox[3] * self.pt_to_mm),
                             }
 
                             extracted_tables.append(structured_table)
@@ -320,7 +335,7 @@ class PdfParser:
             except Exception:
                 pass
 
-            # # 3. Извлекаем изображения
+            # 3. Извлекаем изображения
             images = page.get_images(full=True)
 
             for img_idx, img in enumerate(images):
@@ -342,10 +357,10 @@ class PdfParser:
                     if image_rects:
                         rect = image_rects[0]
                         image_data["geometry"] = {
-                            "left_mm": round(rect.x0 * self.pt_to_mm, 2),
-                            "top_mm": round(rect.y0 * self.pt_to_mm, 2),
-                            "right_mm": round(rect.x1 * self.pt_to_mm, 2),
-                            "bottom_mm": round(rect.y1 * self.pt_to_mm, 2),
+                            "left_mm": int(rect.x0 * self.pt_to_mm),
+                            "top_mm": int(rect.y0 * self.pt_to_mm),
+                            "right_mm": int(rect.x1 * self.pt_to_mm),
+                            "bottom_mm": int(rect.y1 * self.pt_to_mm),
                         }
 
                     output_dir = "extracted_images"
@@ -364,14 +379,49 @@ class PdfParser:
                 except Exception:
                     continue
 
-            # Сортируем блоки страницы вместе по вертикальной позиции (сверху вниз)
+            # --- НАЧАЛО КАСТОМНОЙ СОРТИРОВКИ ПО ПОРЯДКУ ЧТЕНИЯ ---
+            # Допуск по вертикали (в мм). Если разница в top_mm меньше этого значения,
+            # считаем блоки находящимися на одной строке.
+            # 2.5 - 3.0 мм обычно достаточно для учета подстрочных индексов и погрешностей.
+            Y_TOLERANCE_MM = 2.5
+
+            # 1. Первичная сортировка по Y, чтобы алгоритм кластеризации работал корректно
             page_blocks.sort(key=lambda b: b["geometry"]["top_mm"])
 
-            # Пересчитываем индексы после сортировки
-            for block in page_blocks:
-                block["index"] = idx
-                idx += 1
+            lines = []
+            current_line = []
 
+            for block in page_blocks:
+                if not current_line:
+                    current_line.append(block)
+
+                # Берем Y первого блока в текущей строке как эталон (базовую линию)
+                ref_y = current_line[0]["geometry"]["top_mm"]
+                block_y = block["geometry"]["top_mm"]
+
+                # Если блок в пределах допуска по вертикали - добавляем в текущую строку
+                if abs(block_y - ref_y) <= Y_TOLERANCE_MM:
+                    current_line.append(block) 
+                else:
+                    # Иначе сохраняем текущую строку и начинаем новую
+                    lines.append(current_line)
+                    current_line = [block]
+
+                avg_font_size = round(sum(tmp_font_sizes) / len(tmp_font_sizes), 1)
+                block["relative_font_size"] = block.get("data", {}).get("typography", {}).get("size_pt", 0) / avg_font_size
+
+            # Не забываем добавить самую последнюю строку
+            if current_line:
+                lines.append(current_line)
+
+            # 2. Сортируем блоки ВНУТРИ каждой строки по горизонтали (слева направо)
+            for line in lines:
+                line.sort(key=lambda b: b["geometry"]["left_mm"])
+
+            # 3. Сплющиваем (flatten) список строк обратно в один плоский список
+            page_blocks = [block for line in lines for block in line]
+
+            # --- КОНЕЦ КАСТОМНОЙ СОРТИРОВКИ ---
             parsed_document["blocks"].extend(page_blocks)
 
         doc.close()
@@ -380,3 +430,9 @@ class PdfParser:
         #     json.dump(parsed_document, f, ensure_ascii=False, indent=4)
 
         return parsed_document
+
+    def getHex(self, colorInt: int) -> str:
+        r = (colorInt >> 16) & 255
+        g = (colorInt >> 8) & 255
+        b = colorInt & 255
+        return(f"#{r:02x}{g:02x}{b:02x}")
