@@ -14,7 +14,8 @@ from ...document import (
     PageParameters,
     BlockParsedType,
     NormalizeBlockData,
-    ImageBlockData,
+    TextBlockData,
+    ImageBlockData
 )
 
 class PdfParser:
@@ -74,15 +75,17 @@ class PdfParser:
                         t_height = line["bbox"][3] * self.pt_to_mm - line["bbox"][1] * self.pt_to_mm
                         height_difference = abs(line_top_y - prev_line_y)
 
+                        typography_params = BlockTypography(
+                            font_name=span["font"],
+                            font_size=round(span["size"], 1),
+                            color=self.getHex(span.get("color", 0))
+                        )
+
                         block = DocumentBlock(
                             parseed_type=BlockParsedType.TEXT,
                             parsed_block_data=ParsedBlockData(
-                                data=span["text"],
-                                typography=BlockTypography(
-                                    font_name=span["font"],
-                                    font_size=round(span["size"], 1),
-                                    color=self.getHex(span.get("color", 0)),
-                                ),
+                                data=TextBlockData(text=span["text"]),
+                                typography= typography_params,
                                 geometry=BlockGeometry(
                                     left_mm=int(span["bbox"][0] * self.pt_to_mm),
                                     right_mm=int(span["bbox"][2] * self.pt_to_mm),
@@ -91,11 +94,16 @@ class PdfParser:
                                 ),
                                 page_parameters=pageParams,
                             ),
-
+                            normalized_block_data=NormalizeBlockData(
+                                text=None,
+                                has_italic="Italic" in typography_params.font_name and 1 or 0,
+                                has_blood = "Bold" in typography_params.font_name and 1 or 0,
+                            ),
                         )
 
                         page_blocks.append(block)
 
+            avg_font_size
             # 2. Извлекаем таблицы и распределяем текстовые блоки по ячейкам
             # try:
             #     tabs = page.find_tables()
@@ -233,7 +241,6 @@ class PdfParser:
                     xref = img[0]
                     base_image = doc.extract_image(xref)
 
-
                     image_rects = page.get_image_rects(xref)
 
                     output_dir = "extracted_images"
@@ -278,17 +285,19 @@ class PdfParser:
 
             # 1. Первичная сортировка по Y, чтобы алгоритм кластеризации работал корректно
             page_blocks.sort(key=lambda b: b.parsed_block_data.geometry.top_mm)
- 
+
             lines = []
             current_line = []
+
+            block_id = 0
 
             for block in page_blocks:
                 if not current_line:
                     current_line.append(block)
 
                 # Берем Y первого блока в текущей строке как эталон (базовую линию)
-                ref_y = current_line[0]["geometry"]["top_mm"]
-                block_y = block["geometry"]["top_mm"]
+                ref_y = current_line[0].parsed_block_data.geometry.top_mm
+                block_y = block.parsed_block_data.geometry.top_mm
 
                 # Если блок в пределах допуска по вертикали - добавляем в текущую строку
                 if abs(block_y - ref_y) <= Y_TOLERANCE_MM:
@@ -299,7 +308,7 @@ class PdfParser:
                     current_line = [block]
 
                 avg_font_size = round(sum(tmp_font_sizes) / len(tmp_font_sizes), 1)
-                block["relative_font_size"] = block.get("data", {}).get("typography", {}).get("size_pt", 0) / avg_font_size
+                # block["relative_font_size"] = block.get("data", {}).get("typography", {}).get("size_pt", 0) / avg_font_size
 
             # Не забываем добавить самую последнюю строку
             if current_line:
@@ -307,7 +316,7 @@ class PdfParser:
 
             # 2. Сортируем блоки ВНУТРИ каждой строки по горизонтали (слева направо)
             for line in lines:
-                line.sort(key=lambda b: b["geometry"]["left_mm"])
+                line.sort(key=lambda b: b.parsed_block_data.geometry.left_mm)
 
             # 3. Сплющиваем (flatten) список строк обратно в один плоский список
             page_blocks = [block for line in lines for block in line]
