@@ -110,8 +110,6 @@ def main():
     )
 
     
-
-
 def save_pdf_to_json(pdf_path, output_path):
     doc = fitz.open(pdf_path)
 
@@ -139,6 +137,15 @@ def save_pdf_to_json(pdf_path, output_path):
 
     print(f"Данные успешно сохранены в {output_path}")
 
+
+def train_ml_classifer(train_data_path: str):
+    # Загрузить каждый документ
+
+    # Распарсить каждый документ и сложить блоки
+
+    # Обучить классификатор на списке всех блоков
+
+    return
 
 if __name__ == "__main__":
     main()

@@ -14,7 +14,7 @@ from ...document import (
     BlockGeometry,
     PageParameters,
     BlockParsedType,
-    NormalizeBlockData,
+    NormalizeTextBlockData,
     TextBlockData,
     ImageBlockData
 )
@@ -35,7 +35,7 @@ class PdfParser:
         for page_id in range(len(doc)):
             page = doc[page_id]
 
-            pageParams = PageParameters(
+            page_params = PageParameters(
                 number=page_id + 1,
                 width_mm=round(page.rect.width * self.pt_to_mm, 1),
                 height_mm=round(page.rect.height * self.pt_to_mm, 1)
@@ -49,15 +49,14 @@ class PdfParser:
 
             page_dict = page.get_text("dict")
             for block in page_dict.get("blocks", []):
-                if "lines" not in block:
-                    continue
+
+
 
                 for line in block.get("lines", []):
 
                     for span in line.get("spans", []):
 
-                        if not span.get("text", "").strip():
-                            continue
+                        if not span.get("text", "").strip(): continue
 
                         t_size = round(span.get("size"), 1)
                         t_font = span.get("font", "")
@@ -81,7 +80,7 @@ class PdfParser:
                         block = DocumentBlock(
                             parseed_type=BlockParsedType.TEXT,
                             parsed_block_data=ParsedBlockData(
-                                data=TextBlockData(text=span["text"]),
+                                data=TextBlockData(text=span["text"], text_vector=None),
                                 typography= typography_params,
                                 geometry=BlockGeometry(
                                     left_mm=int(span["bbox"][0] * self.pt_to_mm),
@@ -89,9 +88,9 @@ class PdfParser:
                                     top_mm=int(span["bbox"][1] * self.pt_to_mm),
                                     bottom_mm=int(span["bbox"][3] * self.pt_to_mm),
                                 ),
-                                page_parameters=pageParams,
+                                page_parameters=page_params,
                             ),
-                            normalized_block_data=NormalizeBlockData(
+                            normalized_block_data=NormalizeTextBlockData(
                                 text=None,
                                 has_italic=(typography_params.font_name is not None and "Italic" in typography_params.font_name) and 1 or 0,
                                 has_blood = (typography_params.font_name is not None and "Bold" in typography_params.font_name) and 1 or 0,
@@ -265,7 +264,7 @@ class PdfParser:
                                 top_mm=int(image_rects[0].y0 * self.pt_to_mm),
                                 bottom_mm=int(image_rects[0].y1 * self.pt_to_mm),
                             ),
-                            page_parameters=pageParams,
+                            page_parameters=PageParameters,
                         ),
                     )
 

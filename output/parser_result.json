@@ -1,6 +1,10 @@
 {
     "name": "дипломпдф(разметка)",
+<<<<<<< HEAD
     "path": "C:\\Users\\wirel\\OneDrive\\Рабочий стол\\учёба\\вкр\\programs\\proj(main)\\docx\\дипломпдф(разметка).pdf",
+=======
+    "path": "C:\\Users\\sasha\\OneDrive\\Documents\\learn\\dqc\\docx\\дипломпдф(разметка).pdf",
+>>>>>>> c7642ce00e52fbcbe219a44e26674a9ed01f5034
     "blocks": [
         {
             "id": null,
@@ -20987,20 +20991,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_14_img_0.png",
-                    "width_mm": 642,
-                    "height_mm": 872,
-                    "ext": "png"
+                    "text": "Рисунок 1 - Схема бизнес-процессов образовательной системы "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#843c0b"
+                },
                 "geometry": {
-                    "left_mm": 15,
-                    "top_mm": 20,
-                    "right_mm": 194,
-                    "bottom_mm": 261
+                    "left_mm": 45,
+                    "top_mm": 262,
+                    "right_mm": 180,
+                    "bottom_mm": 267
                 },
                 "page_parameters": {
                     "number": 14,
@@ -21008,33 +21013,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_14_img_0.png",
-                    "width_mm": 642,
-                    "height_mm": 872,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 15,
-                    "top_mm": 20,
-                    "right_mm": 194,
-                    "bottom_mm": 261
-                },
-                "page_parameters": {
-                    "number": 14,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -22794,20 +22785,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_16_img_0.png",
-                    "width_mm": 1271,
-                    "height_mm": 581,
-                    "ext": "png"
+                    "text": "Рисунок 2 – AS-IS Схема организации групп студентов в интернет-среде "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#ed7d31"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 198,
-                    "bottom_mm": 104
+                    "left_mm": 35,
+                    "top_mm": 104,
+                    "right_mm": 190,
+                    "bottom_mm": 110
                 },
                 "page_parameters": {
                     "number": 16,
@@ -22815,33 +22807,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_16_img_0.png",
-                    "width_mm": 1271,
-                    "height_mm": 581,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 198,
-                    "bottom_mm": 104
-                },
-                "page_parameters": {
-                    "number": 16,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -25186,32 +25164,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_17_img_0.png",
-                    "width_mm": 892,
-                    "height_mm": 361,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 172,
-                    "right_mm": 194,
-                    "bottom_mm": 239
-                },
-                "page_parameters": {
-                    "number": 17,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -26772,20 +26724,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_19_img_0.png",
-                    "width_mm": 1256,
-                    "height_mm": 581,
-                    "ext": "png"
+                    "text": "Рисунок 4 – AS-IS Схема организации дисциплины в интернет-среде "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 197,
-                    "bottom_mm": 104
+                    "left_mm": 42,
+                    "top_mm": 107,
+                    "right_mm": 189,
+                    "bottom_mm": 113
                 },
                 "page_parameters": {
                     "number": 19,
@@ -26793,33 +26746,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_19_img_0.png",
-                    "width_mm": 1256,
-                    "height_mm": 581,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 197,
-                    "bottom_mm": 104
-                },
-                "page_parameters": {
-                    "number": 19,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -28926,32 +28865,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_20_img_0.png",
-                    "width_mm": 952,
-                    "height_mm": 491,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 127,
-                    "right_mm": 194,
-                    "bottom_mm": 213
-                },
-                "page_parameters": {
-                    "number": 20,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -31452,20 +31365,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_22_img_0.png",
-                    "width_mm": 1191,
-                    "height_mm": 562,
-                    "ext": "png"
+                    "text": "Рисунок 6 – AS-IS Схема публикации учебных материалов в интернет-среде "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
+                    "left_mm": 31,
+                    "top_mm": 100,
                     "right_mm": 194,
-                    "bottom_mm": 97
+                    "bottom_mm": 106
                 },
                 "page_parameters": {
                     "number": 22,
@@ -31473,33 +31387,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_22_img_0.png",
-                    "width_mm": 1191,
-                    "height_mm": 562,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 194,
-                    "bottom_mm": 97
-                },
-                "page_parameters": {
-                    "number": 22,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -34312,20 +34212,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_24_img_0.jpeg",
-                    "width_mm": 1006,
-                    "height_mm": 572,
-                    "ext": "jpeg"
+                    "text": "Рисунок 7 – Интерфейс образовательной платформы «Moodle» "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 48,
-                    "top_mm": 20,
-                    "right_mm": 176,
-                    "bottom_mm": 92
+                    "left_mm": 46,
+                    "top_mm": 92,
+                    "right_mm": 180,
+                    "bottom_mm": 98
                 },
                 "page_parameters": {
                     "number": 24,
@@ -34333,33 +34234,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_24_img_0.jpeg",
-                    "width_mm": 1006,
-                    "height_mm": 572,
-                    "ext": "jpeg"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 48,
-                    "top_mm": 20,
-                    "right_mm": 176,
-                    "bottom_mm": 92
-                },
-                "page_parameters": {
-                    "number": 24,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -34637,32 +34524,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_24_img_1.png",
-                    "width_mm": 1247,
-                    "height_mm": 696,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 52,
-                    "top_mm": 144,
-                    "right_mm": 172,
-                    "bottom_mm": 212
-                },
-                "page_parameters": {
-                    "number": 24,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -34936,20 +34797,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_25_img_0.png",
-                    "width_mm": 932,
-                    "height_mm": 516,
-                    "ext": "png"
+                    "text": "Рисунок 9 – Интерфейс образовательной платформы «Google Classroom» "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 53,
-                    "top_mm": 20,
-                    "right_mm": 171,
-                    "bottom_mm": 85
+                    "left_mm": 35,
+                    "top_mm": 88,
+                    "right_mm": 191,
+                    "bottom_mm": 94
                 },
                 "page_parameters": {
                     "number": 25,
@@ -34957,33 +34819,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_25_img_0.png",
-                    "width_mm": 932,
-                    "height_mm": 516,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 53,
-                    "top_mm": 20,
-                    "right_mm": 171,
-                    "bottom_mm": 85
-                },
-                "page_parameters": {
-                    "number": 25,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -35300,32 +35148,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_25_img_1.jpeg",
-                    "width_mm": 927,
-                    "height_mm": 488,
-                    "ext": "jpeg"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 53,
-                    "top_mm": 154,
-                    "right_mm": 171,
-                    "bottom_mm": 216
-                },
-                "page_parameters": {
-                    "number": 25,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -35599,20 +35421,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_26_img_0.png",
-                    "width_mm": 908,
-                    "height_mm": 538,
-                    "ext": "png"
+                    "text": "Рисунок 11 – Интерфейс образовательной платформы «Kвenisb» "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 54,
-                    "top_mm": 20,
-                    "right_mm": 170,
-                    "bottom_mm": 88
+                    "left_mm": 44,
+                    "top_mm": 91,
+                    "right_mm": 181,
+                    "bottom_mm": 96
                 },
                 "page_parameters": {
                     "number": 26,
@@ -35620,33 +35443,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_26_img_0.png",
-                    "width_mm": 908,
-                    "height_mm": 538,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 54,
-                    "top_mm": 20,
-                    "right_mm": 170,
-                    "bottom_mm": 88
-                },
-                "page_parameters": {
-                    "number": 26,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -47936,32 +47745,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_32_img_0.png",
-                    "width_mm": 629,
-                    "height_mm": 649,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 44,
-                    "top_mm": 121,
-                    "right_mm": 180,
-                    "bottom_mm": 261
-                },
-                "page_parameters": {
-                    "number": 32,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -48270,32 +48053,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_33_img_0.png",
-                    "width_mm": 791,
-                    "height_mm": 477,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 79,
-                    "right_mm": 195,
-                    "bottom_mm": 179
-                },
-                "page_parameters": {
-                    "number": 33,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -48690,20 +48447,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_34_img_0.png",
-                    "width_mm": 601,
-                    "height_mm": 591,
-                    "ext": "png"
+                    "text": "Рисунок 14 – Подробная диаграмма вариантов использования системы для "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
                     "left_mm": 33,
-                    "top_mm": 20,
-                    "right_mm": 191,
-                    "bottom_mm": 176
+                    "top_mm": 176,
+                    "right_mm": 192,
+                    "bottom_mm": 182
                 },
                 "page_parameters": {
                     "number": 34,
@@ -48711,33 +48469,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_34_img_0.png",
-                    "width_mm": 601,
-                    "height_mm": 591,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 33,
-                    "top_mm": 20,
-                    "right_mm": 191,
-                    "bottom_mm": 176
-                },
-                "page_parameters": {
-                    "number": 34,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -49132,20 +48876,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_35_img_0.png",
-                    "width_mm": 491,
-                    "height_mm": 501,
-                    "ext": "png"
+                    "text": "Рисунок 15 – Подробная диаграмма вариантов использования системы для "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 20,
-                    "right_mm": 177,
-                    "bottom_mm": 152
+                    "left_mm": 33,
+                    "top_mm": 153,
+                    "right_mm": 192,
+                    "bottom_mm": 158
                 },
                 "page_parameters": {
                     "number": 35,
@@ -49153,33 +48898,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_35_img_0.png",
-                    "width_mm": 491,
-                    "height_mm": 501,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 20,
-                    "right_mm": 177,
-                    "bottom_mm": 152
-                },
-                "page_parameters": {
-                    "number": 35,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -49574,20 +49305,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_36_img_0.png",
-                    "width_mm": 701,
-                    "height_mm": 632,
-                    "ext": "png"
+                    "text": "Рисунок 16- Подробная диаграмма вариантов использования системы для "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 168
+                    "left_mm": 34,
+                    "top_mm": 171,
+                    "right_mm": 191,
+                    "bottom_mm": 177
                 },
                 "page_parameters": {
                     "number": 36,
@@ -49595,33 +49327,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_36_img_0.png",
-                    "width_mm": 701,
-                    "height_mm": 632,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 168
-                },
-                "page_parameters": {
-                    "number": 36,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -50016,20 +49734,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_37_img_0.png",
-                    "width_mm": 566,
-                    "height_mm": 421,
-                    "ext": "png"
+                    "text": "Рисунок 17- Подробная диаграмма вариантов использования системы для "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 37,
-                    "top_mm": 20,
-                    "right_mm": 187,
-                    "bottom_mm": 131
+                    "left_mm": 34,
+                    "top_mm": 132,
+                    "right_mm": 191,
+                    "bottom_mm": 137
                 },
                 "page_parameters": {
                     "number": 37,
@@ -50037,33 +49756,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_37_img_0.png",
-                    "width_mm": 566,
-                    "height_mm": 421,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 37,
-                    "top_mm": 20,
-                    "right_mm": 187,
-                    "bottom_mm": 131
-                },
-                "page_parameters": {
-                    "number": 37,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -50458,20 +50163,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_38_img_0.png",
-                    "width_mm": 634,
-                    "height_mm": 512,
-                    "ext": "png"
+                    "text": "Рисунок 18- Подробная диаграмма вариантов использования системы для "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 39,
-                    "top_mm": 20,
-                    "right_mm": 185,
-                    "bottom_mm": 137
+                    "left_mm": 34,
+                    "top_mm": 138,
+                    "right_mm": 191,
+                    "bottom_mm": 143
                 },
                 "page_parameters": {
                     "number": 38,
@@ -50479,33 +50185,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_38_img_0.png",
-                    "width_mm": 634,
-                    "height_mm": 512,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 39,
-                    "top_mm": 20,
-                    "right_mm": 185,
-                    "bottom_mm": 137
-                },
-                "page_parameters": {
-                    "number": 38,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -50857,32 +50549,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_38_img_1.png",
-                    "width_mm": 521,
-                    "height_mm": 301,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 43,
-                    "top_mm": 174,
-                    "right_mm": 181,
-                    "bottom_mm": 254
-                },
-                "page_parameters": {
-                    "number": 38,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -51351,32 +51017,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_39_img_0.png",
-                    "width_mm": 621,
-                    "height_mm": 461,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 51,
-                    "right_mm": 194,
-                    "bottom_mm": 173
-                },
-                "page_parameters": {
-                    "number": 39,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -54306,20 +53946,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_41_img_0.png",
-                    "width_mm": 699,
-                    "height_mm": 401,
-                    "ext": "png"
+                    "text": "Рисунок 21 - диаграмма последовательности прецедента “Посмотреть список "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 20,
-                    "right_mm": 176,
-                    "bottom_mm": 93
+                    "left_mm": 30,
+                    "top_mm": 97,
+                    "right_mm": 195,
+                    "bottom_mm": 102
                 },
                 "page_parameters": {
                     "number": 41,
@@ -54327,33 +53968,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_41_img_0.png",
-                    "width_mm": 699,
-                    "height_mm": 401,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 20,
-                    "right_mm": 176,
-                    "bottom_mm": 93
-                },
-                "page_parameters": {
-                    "number": 41,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -58531,20 +58158,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_43_img_0.png",
-                    "width_mm": 566,
-                    "height_mm": 562,
-                    "ext": "png"
+                    "text": "Рисунок 22 - диаграмма последовательности прецедента “Управлять "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 51,
-                    "top_mm": 20,
-                    "right_mm": 173,
-                    "bottom_mm": 141
+                    "left_mm": 39,
+                    "top_mm": 141,
+                    "right_mm": 186,
+                    "bottom_mm": 147
                 },
                 "page_parameters": {
                     "number": 43,
@@ -58552,33 +58180,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_43_img_0.png",
-                    "width_mm": 566,
-                    "height_mm": 562,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 51,
-                    "top_mm": 20,
-                    "right_mm": 173,
-                    "bottom_mm": 141
-                },
-                "page_parameters": {
-                    "number": 43,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -61781,20 +61395,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_45_img_0.png",
-                    "width_mm": 659,
-                    "height_mm": 592,
-                    "ext": "png"
+                    "text": "Рисунок 23 - диаграмма последовательности прецедента “Создать группу” "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 42,
-                    "top_mm": 20,
-                    "right_mm": 182,
-                    "bottom_mm": 145
+                    "left_mm": 33,
+                    "top_mm": 149,
+                    "right_mm": 192,
+                    "bottom_mm": 154
                 },
                 "page_parameters": {
                     "number": 45,
@@ -61802,33 +61417,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_45_img_0.png",
-                    "width_mm": 659,
-                    "height_mm": 592,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 42,
-                    "top_mm": 20,
-                    "right_mm": 182,
-                    "bottom_mm": 145
-                },
-                "page_parameters": {
-                    "number": 45,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -65148,20 +64749,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_47_img_0.png",
-                    "width_mm": 758,
-                    "height_mm": 533,
-                    "ext": "png"
+                    "text": "Рисунок 24 - диаграмма последовательности прецедента “Редактировать "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 44,
-                    "top_mm": 20,
-                    "right_mm": 180,
-                    "bottom_mm": 116
+                    "left_mm": 35,
+                    "top_mm": 119,
+                    "right_mm": 190,
+                    "bottom_mm": 124
                 },
                 "page_parameters": {
                     "number": 47,
@@ -65169,33 +64771,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_47_img_0.png",
-                    "width_mm": 758,
-                    "height_mm": 533,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 44,
-                    "top_mm": 20,
-                    "right_mm": 180,
-                    "bottom_mm": 116
-                },
-                "page_parameters": {
-                    "number": 47,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -69061,20 +68649,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_49_img_0.png",
-                    "width_mm": 663,
-                    "height_mm": 621,
-                    "ext": "png"
+                    "text": "Рисунок 25 - диаграмма последовательности прецедента “удалить группу” "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 20,
-                    "right_mm": 177,
-                    "bottom_mm": 142
+                    "left_mm": 33,
+                    "top_mm": 145,
+                    "right_mm": 192,
+                    "bottom_mm": 150
                 },
                 "page_parameters": {
                     "number": 49,
@@ -69082,33 +68671,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_49_img_0.png",
-                    "width_mm": 663,
-                    "height_mm": 621,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 20,
-                    "right_mm": 177,
-                    "bottom_mm": 142
-                },
-                "page_parameters": {
-                    "number": 49,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -74768,32 +74343,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_51_img_0.png",
-                    "width_mm": 840,
-                    "height_mm": 768,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 47,
-                    "top_mm": 102,
-                    "right_mm": 177,
-                    "bottom_mm": 221
-                },
-                "page_parameters": {
-                    "number": 51,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -76467,32 +76016,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_52_img_0.png",
-                    "width_mm": 1001,
-                    "height_mm": 343,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 41,
-                    "top_mm": 167,
-                    "right_mm": 183,
-                    "bottom_mm": 216
-                },
-                "page_parameters": {
-                    "number": 52,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -79500,20 +79023,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_54_img_0.png",
-                    "width_mm": 541,
-                    "height_mm": 411,
-                    "ext": "png"
+                    "text": "Рисунок 28 - диаграмма состояний системы при работе неизвестного "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 51,
-                    "top_mm": 20,
-                    "right_mm": 173,
-                    "bottom_mm": 113
+                    "left_mm": 39,
+                    "top_mm": 119,
+                    "right_mm": 186,
+                    "bottom_mm": 124
                 },
                 "page_parameters": {
                     "number": 54,
@@ -79521,33 +79045,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_54_img_0.png",
-                    "width_mm": 541,
-                    "height_mm": 411,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 51,
-                    "top_mm": 20,
-                    "right_mm": 173,
-                    "bottom_mm": 113
-                },
-                "page_parameters": {
-                    "number": 54,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -82165,32 +81675,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_55_img_0.png",
-                    "width_mm": 792,
-                    "height_mm": 332,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 37,
-                    "top_mm": 62,
-                    "right_mm": 187,
-                    "bottom_mm": 125
-                },
-                "page_parameters": {
-                    "number": 55,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -83517,32 +83001,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_56_img_0.png",
-                    "width_mm": 870,
-                    "height_mm": 461,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 45,
-                    "top_mm": 196,
-                    "right_mm": 179,
-                    "bottom_mm": 261
-                },
-                "page_parameters": {
-                    "number": 56,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -84631,32 +84089,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_57_img_0.png",
-                    "width_mm": 931,
-                    "height_mm": 461,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 139,
-                    "right_mm": 195,
-                    "bottom_mm": 221
-                },
-                "page_parameters": {
-                    "number": 57,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -86338,32 +85770,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_59_img_0.png",
-                    "width_mm": 894,
-                    "height_mm": 714,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 45,
-                    "right_mm": 195,
-                    "bottom_mm": 177
-                },
-                "page_parameters": {
-                    "number": 59,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -87924,20 +87330,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_61_img_0.png",
-                    "width_mm": 885,
-                    "height_mm": 738,
-                    "ext": "png"
+                    "text": "Рисунок 33 - Проект интерфейса страницы группы преподавателя "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 157
+                    "left_mm": 42,
+                    "top_mm": 160,
+                    "right_mm": 183,
+                    "bottom_mm": 166
                 },
                 "page_parameters": {
                     "number": 61,
@@ -87945,33 +87352,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_61_img_0.png",
-                    "width_mm": 885,
-                    "height_mm": 738,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 157
-                },
-                "page_parameters": {
-                    "number": 61,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -89731,32 +89124,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_63_img_0.png",
-                    "width_mm": 907,
-                    "height_mm": 918,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 28,
-                    "right_mm": 195,
-                    "bottom_mm": 195
-                },
-                "page_parameters": {
-                    "number": 63,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -90494,32 +89861,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_64_img_0.png",
-                    "width_mm": 849,
-                    "height_mm": 678,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 131,
-                    "right_mm": 195,
-                    "bottom_mm": 263
-                },
-                "page_parameters": {
-                    "number": 64,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -91616,20 +90957,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_66_img_0.png",
-                    "width_mm": 952,
-                    "height_mm": 871,
-                    "ext": "png"
+                    "text": "Рисунок 36 - Проект интерфейса страницы дисциплин и материалов студента "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
                     "left_mm": 30,
-                    "top_mm": 20,
+                    "top_mm": 174,
                     "right_mm": 195,
-                    "bottom_mm": 170
+                    "bottom_mm": 179
                 },
                 "page_parameters": {
                     "number": 66,
@@ -91637,33 +90979,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_66_img_0.png",
-                    "width_mm": 952,
-                    "height_mm": 871,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 170
-                },
-                "page_parameters": {
-                    "number": 66,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -93423,20 +92751,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_68_img_0.png",
-                    "width_mm": 928,
-                    "height_mm": 739,
-                    "ext": "png"
+                    "text": "Рисунок 37 - Проект интерфейса страницы консультаций преподавателя "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
                     "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 151
+                    "top_mm": 154,
+                    "right_mm": 184,
+                    "bottom_mm": 159
                 },
                 "page_parameters": {
                     "number": 68,
@@ -93444,33 +92773,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_68_img_0.png",
-                    "width_mm": 928,
-                    "height_mm": 739,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 151
-                },
-                "page_parameters": {
-                    "number": 68,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -97258,20 +96573,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_71_img_0.jpeg",
-                    "width_mm": 700,
-                    "height_mm": 390,
-                    "ext": "jpeg"
+                    "text": "Рисунок 38 – Пример архитектуры FSD "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 39,
-                    "top_mm": 20,
-                    "right_mm": 185,
-                    "bottom_mm": 101
+                    "left_mm": 70,
+                    "top_mm": 104,
+                    "right_mm": 155,
+                    "bottom_mm": 110
                 },
                 "page_parameters": {
                     "number": 71,
@@ -97279,33 +96595,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_71_img_0.jpeg",
-                    "width_mm": 700,
-                    "height_mm": 390,
-                    "ext": "jpeg"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 39,
-                    "top_mm": 20,
-                    "right_mm": 185,
-                    "bottom_mm": 101
-                },
-                "page_parameters": {
-                    "number": 71,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -100040,20 +99342,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_73_img_0.png",
-                    "width_mm": 664,
-                    "height_mm": 484,
-                    "ext": "png"
+                    "text": "Рисунок 39 – Пример компонента vue "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 44,
-                    "top_mm": 20,
-                    "right_mm": 180,
-                    "bottom_mm": 119
+                    "left_mm": 72,
+                    "top_mm": 122,
+                    "right_mm": 153,
+                    "bottom_mm": 128
                 },
                 "page_parameters": {
                     "number": 73,
@@ -100061,33 +99364,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_73_img_0.png",
-                    "width_mm": 664,
-                    "height_mm": 484,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 44,
-                    "top_mm": 20,
-                    "right_mm": 180,
-                    "bottom_mm": 119
-                },
-                "page_parameters": {
-                    "number": 73,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -119670,20 +118959,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_85_img_0.png",
-                    "width_mm": 1459,
-                    "height_mm": 861,
-                    "ext": "png"
+                    "text": "Рисунок 40 - страница авторизации "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
+                    "left_mm": 75,
+                    "top_mm": 120,
+                    "right_mm": 151,
+                    "bottom_mm": 125
                 },
                 "page_parameters": {
                     "number": 85,
@@ -119691,33 +118981,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_85_img_0.png",
-                    "width_mm": 1459,
-                    "height_mm": 861,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
-                },
-                "page_parameters": {
-                    "number": 85,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -120190,20 +119466,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_86_img_0.png",
-                    "width_mm": 1458,
-                    "height_mm": 863,
-                    "ext": "png"
+                    "text": "Рисунок 41 - страница авторизации с карточкой регистрации "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
+                    "left_mm": 48,
+                    "top_mm": 120,
+                    "right_mm": 177,
+                    "bottom_mm": 126
                 },
                 "page_parameters": {
                     "number": 86,
@@ -120211,33 +119488,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_86_img_0.png",
-                    "width_mm": 1458,
-                    "height_mm": 863,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
-                },
-                "page_parameters": {
-                    "number": 86,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -121174,32 +120437,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_87_img_0.png",
-                    "width_mm": 1459,
-                    "height_mm": 863,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 71,
-                    "right_mm": 195,
-                    "bottom_mm": 168
-                },
-                "page_parameters": {
-                    "number": 87,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -122448,32 +121685,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_88_img_0.png",
-                    "width_mm": 1461,
-                    "height_mm": 861,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 155,
-                    "right_mm": 195,
-                    "bottom_mm": 252
-                },
-                "page_parameters": {
-                    "number": 88,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,
@@ -123921,32 +123132,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_90_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 851,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 54,
-                    "right_mm": 195,
-                    "bottom_mm": 150
-                },
-                "page_parameters": {
-                    "number": 90,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -124493,20 +123678,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_91_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 865,
-                    "ext": "png"
+                    "text": "Рисунок 45 - страница группы студента "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
+                    "left_mm": 70,
+                    "top_mm": 120,
+                    "right_mm": 155,
+                    "bottom_mm": 126
                 },
                 "page_parameters": {
                     "number": 91,
@@ -124514,33 +123700,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_91_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 865,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
-                },
-                "page_parameters": {
-                    "number": 91,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -125052,20 +124224,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_92_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 863,
-                    "ext": "png"
+                    "text": "Рисунок 46 - страница дисциплин и материалов студента "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
+                    "left_mm": 52,
+                    "top_mm": 120,
+                    "right_mm": 173,
+                    "bottom_mm": 125
                 },
                 "page_parameters": {
                     "number": 92,
@@ -125073,33 +124246,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_92_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 863,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
-                },
-                "page_parameters": {
-                    "number": 92,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -125650,20 +124809,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_93_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 864,
-                    "ext": "png"
+                    "text": "Рисунок 47 - страница консультаций студента "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
+                    "left_mm": 63,
+                    "top_mm": 120,
+                    "right_mm": 162,
+                    "bottom_mm": 126
                 },
                 "page_parameters": {
                     "number": 93,
@@ -125671,33 +124831,19 @@
                     "height_mm": 297.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_93_img_0.png",
-                    "width_mm": 1463,
-                    "height_mm": 864,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 20,
-                    "right_mm": 195,
-                    "bottom_mm": 117
-                },
-                "page_parameters": {
-                    "number": 93,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -154133,32 +153279,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_107_img_0.png",
-                    "width_mm": 1141,
-                    "height_mm": 681,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 39,
-                    "top_mm": 39,
-                    "right_mm": 257,
-                    "bottom_mm": 168
-                },
-                "page_parameters": {
-                    "number": 107,
-                    "width_mm": 297.0,
-                    "height_mm": 210.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -154237,20 +153357,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_108_img_0.png",
-                    "width_mm": 1142,
-                    "height_mm": 681,
-                    "ext": "png"
+                    "text": "Рисунок А.2 - Проект интерфейсов диалоговых форм для администрирования дисциплин и материалов "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 20,
-                    "top_mm": 15,
-                    "right_mm": 277,
-                    "bottom_mm": 168
+                    "left_mm": 39,
+                    "top_mm": 171,
+                    "right_mm": 258,
+                    "bottom_mm": 177
                 },
                 "page_parameters": {
                     "number": 108,
@@ -154258,33 +153379,19 @@
                     "height_mm": 210.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_108_img_0.png",
-                    "width_mm": 1142,
-                    "height_mm": 681,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 20,
-                    "top_mm": 15,
-                    "right_mm": 277,
-                    "bottom_mm": 168
-                },
-                "page_parameters": {
-                    "number": 108,
-                    "width_mm": 297.0,
-                    "height_mm": 210.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -154367,20 +153474,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_109_img_0.png",
-                    "width_mm": 772,
-                    "height_mm": 541,
-                    "ext": "png"
+                    "text": "Рисунок А.3 - Проект интерфейсов диалоговых форм для администрирования консультаций "
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 38,
-                    "top_mm": 15,
-                    "right_mm": 258,
-                    "bottom_mm": 168
+                    "left_mm": 51,
+                    "top_mm": 172,
+                    "right_mm": 247,
+                    "bottom_mm": 177
                 },
                 "page_parameters": {
                     "number": 109,
@@ -154388,33 +153496,19 @@
                     "height_mm": 210.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_109_img_0.png",
-                    "width_mm": 772,
-                    "height_mm": 541,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 38,
-                    "top_mm": 15,
-                    "right_mm": 258,
-                    "bottom_mm": 168
-                },
-                "page_parameters": {
-                    "number": 109,
-                    "width_mm": 297.0,
-                    "height_mm": 210.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -181602,20 +180696,21 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
+            "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
-                    "saved_path": "extracted_images\\page_117_img_0.png",
-                    "width_mm": 1564,
-                    "height_mm": 1031,
-                    "ext": "png"
+                    "text": "Рисунок В.1 - Диаграмма состояний системы при работе преподавателя"
                 },
-                "typography": null,
+                "typography": {
+                    "font_name": "TimesNewRomanPSMT",
+                    "font_size": 14.0,
+                    "color": "#000000"
+                },
                 "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 15,
-                    "right_mm": 266,
-                    "bottom_mm": 170
+                    "left_mm": 72,
+                    "top_mm": 174,
+                    "right_mm": 224,
+                    "bottom_mm": 179
                 },
                 "page_parameters": {
                     "number": 117,
@@ -181623,33 +180718,19 @@
                     "height_mm": 210.0
                 }
             },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_117_img_0.png",
-                    "width_mm": 1564,
-                    "height_mm": 1031,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 30,
-                    "top_mm": 15,
-                    "right_mm": 266,
-                    "bottom_mm": 170
-                },
-                "page_parameters": {
-                    "number": 117,
-                    "width_mm": 297.0,
-                    "height_mm": 210.0
-                }
-            },
-            "normalized_block_data": null
+            "normalized_block_data": {
+                "text": null,
+                "has_italic": 0,
+                "has_blood": 0,
+                "relative_font_size": null,
+                "relative_margin_top": null,
+                "relative_margin_bottom": null,
+                "relative_space_left": null,
+                "relative_height": null,
+                "line_position": null,
+                "prev_block_style_similarity": null,
+                "prev_block_type": null
+            }
         },
         {
             "id": null,
@@ -185047,32 +184128,6 @@
         {
             "id": null,
             "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_119_img_0.png",
-                    "width_mm": 783,
-                    "height_mm": 1011,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 29,
-                    "top_mm": 39,
-                    "right_mm": 199,
-                    "bottom_mm": 257
-                },
-                "page_parameters": {
-                    "number": 119,
-                    "width_mm": 210.0,
-                    "height_mm": 297.0
-                }
-            },
-            "normalized_block_data": null
-        },
-        {
-            "id": null,
-            "classified_type": null,
             "parseed_type": "text",
             "parsed_block_data": {
                 "data": {
@@ -185264,32 +184319,6 @@
                 "prev_block_style_similarity": null,
                 "prev_block_type": null
             }
-        },
-        {
-            "id": null,
-            "classified_type": null,
-            "parseed_type": "image",
-            "parsed_block_data": {
-                "data": {
-                    "saved_path": "extracted_images\\page_120_img_0.png",
-                    "width_mm": 1493,
-                    "height_mm": 822,
-                    "ext": "png"
-                },
-                "typography": null,
-                "geometry": {
-                    "left_mm": 29,
-                    "top_mm": 39,
-                    "right_mm": 267,
-                    "bottom_mm": 170
-                },
-                "page_parameters": {
-                    "number": 120,
-                    "width_mm": 297.0,
-                    "height_mm": 210.0
-                }
-            },
-            "normalized_block_data": null
         },
         {
             "id": null,

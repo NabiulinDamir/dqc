@@ -5,7 +5,6 @@ from .rule_based import RuleBasedClassifier
 from .ml_classifer import MlClassifier
 
 from modules.document import Document, DocumentBlock, BlockParsedType, BlockClassifiedType
-# from .base import create_dictionary, TrainDocumentInfo
 
 def get_classifier(method: str):
     match(method):
@@ -17,50 +16,13 @@ def get_classifier(method: str):
             return RuleBasedClassifier()
 
 
-# def classify_one_block(previous_block: Dict[str, Any], current_block: Dict[str, Any], next_block: Dict[str, Any], method: str) -> str:
-#     classifier = classifier or _get_classifier(method)
-#     return classifier.classify(previous_block, current_block, next_block).normalise_block
-
-# def classify_all_block(blocks: List[Dict[str, Any]], method: str) -> str:
-#     classifier = classifier or _get_classifier(method)
-#     return classifier.classify(blocks)
-
-
 def classify_blocks(blocks: List[DocumentBlock], method: str) -> List[DocumentBlock]:
     # Классифицируем все блоки в документе попарно.
-    if not blocks:
-        return []
+    if not blocks: return []
 
     classifier = get_classifier(method)
-
     classifed_blocks = classifier.classify(blocks)
-
-    # previous_block = None
-    # current_block = None
-    # next_block = None
-
-    # print(len(blocks))
-
-    # blocks.append(None)
-    # for block in blocks:
-
-    #     previous_block = current_block
-    #     current_block = next_block
-    #     next_block = block
-
-    #     if current_block is None: continue
-
-    #     classifed_block = dict(current_block)
-    #     # print(current_block)
-    #     classifed_block["classification_result"] = classify_one_block(
-    #         previous_block, current_block, next_block, method="", classifier=classifier
-    #     )
-    #     classifed_blocks.append(classifed_block)
 
     return classifed_blocks
 
 
-def train_ml_classifer(blocks: List[DocumentBlock]):
-    print("Начало обучения")
-    classifier = get_classifier("ml")
-    classifier.train(blocks)
