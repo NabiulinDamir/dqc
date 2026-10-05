@@ -3,6 +3,7 @@ import json
 import os
 
 from typing import Any, Dict, List, Optional
+import numpy as np
 
 from ...document import (
     BlockParsedType,
@@ -29,11 +30,6 @@ class PdfParser:
         """Парсит PDF на текстовые блоки, таблицы и изображения в порядке чтения."""
         doc = fitz.open(pdf_path)
 
-        # parsed_document = {
-        #     "blocks": [],
-        #     "pages_info": [],
-        # }
-
         blocks: List[DocumentBlock] = []
 
         for page_id in range(len(doc)):
@@ -45,40 +41,41 @@ class PdfParser:
                 height_mm=round(page.rect.height * self.pt_to_mm, 1)
             )
 
+            # Временные значения для подсчета относитлеьного
             tmp_font_sizes = []
 
-            # 1. Извлекаем текстовые блоки
-            page_dict = page.get_text("dict")
-
             page_blocks = []
-            tmp_text = ""
-
             prev_line_y = 0
+
+            page_dict = page.get_text("dict")
             for block in page_dict.get("blocks", []):
                 if "lines" not in block:
                     continue
 
-                height_difference = 0
+                for line in block.get("lines", []):
 
-                for line in block["lines"]:
+                    for span in line.get("spans", []):
 
-                    for span in line["spans"]:
-
-                        if not span["text"].strip():
+                        if not span.get("text", "").strip():
                             continue
 
-                        f_size = round(span["size"], 1)
+                        t_size = round(span.get("size"), 1)
+                        t_font = span.get("font", "")
+                        t_color = self.getHex(span.get("color", 0))
 
-                        tmp_font_sizes.append(f_size)
+                        p_left = span.get("bbox", 0)
+                        
 
-                        line_top_y = line["bbox"][1] * self.pt_to_mm
-                        t_height = line["bbox"][3] * self.pt_to_mm - line["bbox"][1] * self.pt_to_mm
-                        height_difference = abs(line_top_y - prev_line_y)
+                        tmp_font_sizes.append(t_size)
+
+                        # line_top_y = line["bbox"][1] * self.pt_to_mm
+                        # t_height = line["bbox"][3] * self.pt_to_mm - line["bbox"][1] * self.pt_to_mm
+                        # height_difference = abs(line_top_y - prev_line_y)
 
                         typography_params = BlockTypography(
-                            font_name=span["font"],
-                            font_size=round(span["size"], 1),
-                            color=self.getHex(span.get("color", 0))
+                            font_name=t_font,
+                            font_size=t_size,
+                            color=t_color,
                         )
 
                         block = DocumentBlock(
@@ -96,14 +93,14 @@ class PdfParser:
                             ),
                             normalized_block_data=NormalizeBlockData(
                                 text=None,
-                                has_italic="Italic" in typography_params.font_name and 1 or 0,
-                                has_blood = "Bold" in typography_params.font_name and 1 or 0,
+                                has_italic=(typography_params.font_name is not None and "Italic" in typography_params.font_name) and 1 or 0,
+                                has_blood = (typography_params.font_name is not None and "Bold" in typography_params.font_name) and 1 or 0,
                             ),
                         )
 
                         page_blocks.append(block)
 
-            avg_font_size
+            # avg_font_size
             # 2. Извлекаем таблицы и распределяем текстовые блоки по ячейкам
             # try:
             #     tabs = page.find_tables()
