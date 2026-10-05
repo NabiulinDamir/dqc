@@ -4,7 +4,7 @@ from .base import BaseClassifier, ClassificationResult
 
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
-import pymorphy2
+import pymorphy3
 from nltk.tokenize import WordPunctTokenizer
 from nltk.corpus import stopwords
 import re
@@ -23,7 +23,7 @@ from ..document import (
 )
 
 # Инициализация инструментов
-morph = pymorphy2.MorphAnalyzer()
+morph = pymorphy3.MorphAnalyzer()
 tokenizer = WordPunctTokenizer()
 stop_words = set(stopwords.words('russian'))
 

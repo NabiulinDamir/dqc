@@ -39,7 +39,7 @@ class PdfParser:
         for page_id in range(len(doc)):
             page = doc[page_id]
 
-            pageParams = PageParameters(
+            page_params = PageParameters(
                 number=page_id + 1,
                 width_mm=round(page.rect.width * self.pt_to_mm, 1),
                 height_mm=round(page.rect.height * self.pt_to_mm, 1)
@@ -55,17 +55,15 @@ class PdfParser:
 
             prev_line_y = 0
             for block in page_dict.get("blocks", []):
-                if "lines" not in block:
-                    continue
+
 
                 height_difference = 0
 
-                for line in block["lines"]:
+                for line in block.get("lines", []):
 
-                    for span in line["spans"]:
+                    for span in line.get("spans", []):
 
-                        if not span["text"].strip():
-                            continue
+                        if not span.get("text", "").strip(): continue
 
                         f_size = round(span["size"], 1)
 
@@ -92,7 +90,7 @@ class PdfParser:
                                     top_mm=int(span["bbox"][1] * self.pt_to_mm),
                                     bottom_mm=int(span["bbox"][3] * self.pt_to_mm),
                                 ),
-                                page_parameters=pageParams,
+                                page_parameters=page_params,
                             ),
                             normalized_block_data=NormalizeBlockData(
                                 text=None,
@@ -103,7 +101,7 @@ class PdfParser:
 
                         page_blocks.append(block)
 
-            avg_font_size
+            # avg_font_size
             # 2. Извлекаем таблицы и распределяем текстовые блоки по ячейкам
             # try:
             #     tabs = page.find_tables()

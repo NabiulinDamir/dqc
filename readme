@@ -1,0 +1,7 @@
+pip uninstall -y fitz sklearn docx pymorphy2
+
+pip install pymupdf python-docx joblib scikit-learn pymorphy2-dicts-ru pymorphy3 nltk
+
+$env:NLTK_ALLOW_PROXIED_URLOPEN=1; python -c "import nltk; nltk.download('stopwords')"
+
+python main.py
