@@ -24,7 +24,7 @@ class ClassificationResult:
     ]
     confidence: float = 0.0
     metadata: Optional[Dict[str, Any]] = None
-    normalise_block: Optional[Dict[str, Any]] = None
+    #normalise_block: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

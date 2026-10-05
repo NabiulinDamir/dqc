@@ -13,7 +13,7 @@ from ...document import (
     BlockGeometry,
     PageParameters,
     BlockParsedType,
-    NormalizeBlockData,
+    NormalizeTextBlockData,
     TextBlockData,
     ImageBlockData
 )
@@ -82,7 +82,7 @@ class PdfParser:
                         block = DocumentBlock(
                             parseed_type=BlockParsedType.TEXT,
                             parsed_block_data=ParsedBlockData(
-                                data=TextBlockData(text=span["text"]),
+                                data=TextBlockData(text=span["text"], text_vector=None),
                                 typography= typography_params,
                                 geometry=BlockGeometry(
                                     left_mm=int(span["bbox"][0] * self.pt_to_mm),
@@ -92,10 +92,9 @@ class PdfParser:
                                 ),
                                 page_parameters=page_params,
                             ),
-                            normalized_block_data=NormalizeBlockData(
-                                text=None,
-                                has_italic="Italic" in typography_params.font_name and 1 or 0,
-                                has_blood = "Bold" in typography_params.font_name and 1 or 0,
+                            normalized_block_data=NormalizeTextBlockData(
+                                has_italic = "Italic" in typography_params.font_name and 1 or 0,
+                                has_blood  = "Bold" in typography_params.font_name and 1 or 0,
                             ),
                         )
 
