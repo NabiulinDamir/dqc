@@ -32,6 +32,8 @@ class PdfParser:
 
         blocks: List[DocumentBlock] = []
 
+        tmp_block_id = 0
+
         for page_id in range(len(doc)):
             page = doc[page_id]
 
@@ -56,15 +58,19 @@ class PdfParser:
 
                     for span in line.get("spans", []):
 
-                        if not span.get("text", "").strip(): continue
+                        t_text = span.get("text", "").strip()
+
+                        if not t_text: continue
 
                         t_size = round(span.get("size"), 1)
                         t_font = span.get("font", "")
                         t_color = self.getHex(span.get("color", 0))
 
-                        p_left = span.get("bbox", 0)
+                        p_left = span.get("bbox", 0)[0]
+                        p_right = span.get("bbox", 0)[2]
+                        p_top = span.get("bbox", 0)[1]
+                        p_bottom = span.get("bbox", 0)[3]
                         
-
                         tmp_font_sizes.append(t_size)
 
                         # line_top_y = line["bbox"][1] * self.pt_to_mm
@@ -78,20 +84,19 @@ class PdfParser:
                         )
 
                         block = DocumentBlock(
-                            parseed_type=BlockParsedType.TEXT,
+                            parsed_type=BlockParsedType.TEXT,
                             parsed_block_data=ParsedBlockData(
-                                data=TextBlockData(text=span["text"], text_vector=None),
+                                data=TextBlockData(text=t_text),
                                 typography= typography_params,
                                 geometry=BlockGeometry(
-                                    left_mm=int(span["bbox"][0] * self.pt_to_mm),
-                                    right_mm=int(span["bbox"][2] * self.pt_to_mm),
-                                    top_mm=int(span["bbox"][1] * self.pt_to_mm),
-                                    bottom_mm=int(span["bbox"][3] * self.pt_to_mm),
+                                    left_mm     = int(p_left * self.pt_to_mm),
+                                    right_mm    = int(p_right * self.pt_to_mm),
+                                    top_mm      = int(p_top * self.pt_to_mm),
+                                    bottom_mm   = int(p_bottom * self.pt_to_mm),
                                 ),
                                 page_parameters=page_params,
                             ),
                             normalized_block_data=NormalizeTextBlockData(
-                                text=None,
                                 has_italic=(typography_params.font_name is not None and "Italic" in typography_params.font_name) and 1 or 0,
                                 has_blood = (typography_params.font_name is not None and "Bold" in typography_params.font_name) and 1 or 0,
                             ),
@@ -250,7 +255,7 @@ class PdfParser:
                         f.write(base_image["image"])
 
                     block = DocumentBlock(
-                        parseed_type=BlockParsedType.IMAGE,
+                        parsed_type=BlockParsedType.IMAGE,
                         parsed_block_data=ParsedBlockData(
                             data=ImageBlockData(
                                 width_mm=base_image["width"],
@@ -264,7 +269,7 @@ class PdfParser:
                                 top_mm=int(image_rects[0].y0 * self.pt_to_mm),
                                 bottom_mm=int(image_rects[0].y1 * self.pt_to_mm),
                             ),
-                            page_parameters=PageParameters,
+                            page_parameters=page_params
                         ),
                     )
 
@@ -285,7 +290,7 @@ class PdfParser:
             lines = []
             current_line = []
 
-            block_id = 0
+            
 
             for block in page_blocks:
                 if not current_line:
@@ -315,7 +320,13 @@ class PdfParser:
                 line.sort(key=lambda b: b.parsed_block_data.geometry.left_mm)
 
             # 3. Сплющиваем (flatten) список строк обратно в один плоский список
-            page_blocks = [block for line in lines for block in line]
+            # и сразу назначаем id в порядке чтения.
+            page_blocks = []
+            for line in lines:
+                for block in line:
+                    block.id = tmp_block_id
+                    tmp_block_id += 1
+                    page_blocks.append(block)
 
             # --- КОНЕЦ КАСТОМНОЙ СОРТИРОВКИ ---
             blocks.extend(page_blocks)

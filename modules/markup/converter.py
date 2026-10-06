@@ -2,15 +2,7 @@ from typing import List, Dict, Any
 from modules.markup.base import Markup
 
 from ..document import (
-    BlockParsedType,
-    BlockClassifiedType,
     DocumentBlock,
-    ParsedBlockData,
-    BlockTypography,
-    BlockGeometry,
-    PageParameters,
-    BlockParsedType,
-    NormalizeBlockData,
 )
 
 def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:

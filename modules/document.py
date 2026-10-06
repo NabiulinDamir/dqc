@@ -82,7 +82,9 @@ class NormalizeTextBlockData:
     line_position: Optional[int]                 = None  # Позиция в строке
     # Контекстные
     prev_block_style_similarity: Optional[float] = None  # Относительная схожесть с предыдущим блоком по стилевым параметрам
-    prev_block_type: Optional[List]              = None  # Вектор типа предыдущего блока [0, 1, 0, 0] - Заголовок
+    prev_classified_block_type: Optional[int]    = None  # Классифицированный тип предыдущего блока 2 - заголовок
+    prev_parsed_block_type: Optional[int]        = None  # Реальный тип предыдущего блока 2 - картинка
+    next_parsed_block_type: Optional[int]        = None  # Реальный тип следующего блока 2 - картинка
     prev_block_text_vector: Optional[List]       = None  # Вектор текста предыдущего блока
 
 
@@ -91,9 +93,9 @@ class DocumentBlock:
     id: Optional[int]                                       = None
     # error: Optional[BlockError] = None
     classified_type: Optional[BlockClassifiedType]          = None # Классифицированный тип блока
-    parseed_type: Optional[BlockParsedType]                 = None # Реальный тип блока
+    parsed_type: Optional[BlockParsedType]                  = None # Реальный тип блока
     parsed_block_data: Optional[ParsedBlockData]            = None # Данные для проверки на соответствие правилам
-    normalized_block_data: Optional[NormalizeTextBlockData] = None # Данные для классификации
+    normalized_block_data: Optional[NormalizeTextBlockData] = None # Данные для классификации текста
 
 class Document:
     name: Optional[str]         = None
@@ -116,10 +118,16 @@ class Document:
         pass
 
 
+import inspect
+
 class CustomEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Enum):
             return obj.value
+        elif inspect.isclass(obj):
+            # Это сам класс — берём его атрибуты как обычный dict
+            return {k: v for k, v in obj.__dict__.items() if not k.startswith('__')}
         elif hasattr(obj, "__dict__"):
+            # Это экземпляр класса
             return obj.__dict__
         return super().default(obj)

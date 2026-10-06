@@ -1,5 +1,4 @@
 from typing import Any, Dict, List, Optional
-from __future__ import braces
 from .base import BaseClassifier, ClassificationResult
 
 import joblib
@@ -10,16 +9,9 @@ from nltk.corpus import stopwords
 import re
 
 from ..document import (
-    BlockParsedType,
-    BlockClassifiedType,
     DocumentBlock,
-    ParsedBlockData,
-    BlockTypography,
-    BlockGeometry,
-    PageParameters,
-    BlockParsedType,
-    NormalizeBlockData,
-    TextBlockData
+    TextBlockData,
+    BlockParsedType
 )
 
 # Инициализация инструментов
@@ -81,8 +73,11 @@ class MlClassifier(BaseClassifier):
 
         result = ClassificationResult(label="empty", confidence=0.0, metadata={})
 
-        if not extracted_block_text(current_block):
-            result.label = "empty"
+        if (current_block.parsed_type == BlockParsedType.IMAGE):
+            result.label = "image"
+            result.confidence = 0.0
+        elif (current_block.parsed_type == BlockParsedType.TABLE):
+            result.label = "table"
             result.confidence = 0.0
         else:
             current_block.normalized_block_data.text_vector = self.all_vectors[index].toarray().flatten().tolist()

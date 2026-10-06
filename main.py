@@ -16,7 +16,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from modules.parser.pipeline import get_parser
-from modules.classification.pipeline import classify_blocks, train_ml_classifer, get_classifier
+from modules.classification.pipeline import classify_blocks, get_classifier
 from modules.markup.pipeline import markup_document
 from modules.markup.converter import blocks_to_markup
 
