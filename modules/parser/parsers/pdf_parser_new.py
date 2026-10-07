@@ -1,9 +1,8 @@
-import fitz
+import pymupdf
 import json
 import os
 
 from typing import Any, Dict, List, Optional
-import numpy as np
 
 from ...document import (
     BlockParsedType,
@@ -13,7 +12,6 @@ from ...document import (
     BlockTypography,
     BlockGeometry,
     PageParameters,
-    BlockParsedType,
     NormalizeTextBlockData,
     TextBlockData,
     ImageBlockData
@@ -28,35 +26,39 @@ class PdfParser:
 
     def parse(self, pdf_path: str):
         """Парсит PDF на текстовые блоки, таблицы и изображения в порядке чтения."""
-        doc = fitz.open(pdf_path)
+        doc = pymupdf.open(pdf_path)
 
-        blocks: List[DocumentBlock] = []
-
+        all_blocks: List[DocumentBlock] = []
+    
+        # ___________ Временные значения документа ___________
         tmp_block_id = 0
+        tmp_prev_block = None
+        tmp_prev_block_parsed_type = None
+        tmp_next_block_parsed_type = None
+        # ___________________________________________________
 
-        for page_id in range(len(doc)):
-            page = doc[page_id]
+        for page_id in range(doc.page_count):
+            page = doc.load_page(page_id)
 
             page_params = PageParameters(
                 number=page_id + 1,
-                width_mm=round(page.rect.width * self.pt_to_mm, 1),
-                height_mm=round(page.rect.height * self.pt_to_mm, 1)
+                width_mm=round(page.rect.width, 1),
+                height_mm=round(page.rect.height, 1)
             )
 
-            # Временные значения для подсчета относитлеьного
+            # ___________ Временные значения страницы ___________
             tmp_font_sizes = []
 
+            # ___________________________________________________
+
             page_blocks = []
-            prev_line_y = 0
 
             page_dict = page.get_text("dict")
             for block in page_dict.get("blocks", []):
 
-
-
                 for line in block.get("lines", []):
 
-                    for span in line.get("spans", []):
+                    for span_idx, span in enumerate(line.get("spans", [])):
 
                         t_text = span.get("text", "").strip()
 
@@ -66,10 +68,6 @@ class PdfParser:
                         t_font = span.get("font", "")
                         t_color = self.getHex(span.get("color", 0))
 
-                        p_left = span.get("bbox", 0)[0]
-                        p_right = span.get("bbox", 0)[2]
-                        p_top = span.get("bbox", 0)[1]
-                        p_bottom = span.get("bbox", 0)[3]
                         
                         tmp_font_sizes.append(t_size)
 
@@ -83,26 +81,29 @@ class PdfParser:
                             color=t_color,
                         )
 
-                        block = DocumentBlock(
+                        structure_block = DocumentBlock(
                             parsed_type=BlockParsedType.TEXT,
-                            parsed_block_data=ParsedBlockData(
+                            parsed_data=ParsedBlockData(
                                 data=TextBlockData(text=t_text),
                                 typography= typography_params,
                                 geometry=BlockGeometry(
-                                    left_mm     = int(p_left * self.pt_to_mm),
-                                    right_mm    = int(p_right * self.pt_to_mm),
-                                    top_mm      = int(p_top * self.pt_to_mm),
-                                    bottom_mm   = int(p_bottom * self.pt_to_mm),
+                                    left_mm     = span.get("bbox", 0)[0],
+                                    right_mm    = span.get("bbox", 0)[2],
+                                    top_mm      = span.get("bbox", 0)[1],
+                                    bottom_mm   = span.get("bbox", 0)[3]
                                 ),
                                 page_parameters=page_params,
                             ),
-                            normalized_block_data=NormalizeTextBlockData(
+                            normalized_data=NormalizeTextBlockData(
                                 has_italic=(typography_params.font_name is not None and "Italic" in typography_params.font_name) and 1 or 0,
                                 has_blood = (typography_params.font_name is not None and "Bold" in typography_params.font_name) and 1 or 0,
+                                has_capital_start = (t_text[0].isalpha() and t_text[0].isupper()) and 1 or 0,
+                                
+
                             ),
                         )
 
-                        page_blocks.append(block)
+                        page_blocks.append(structure_block)
 
             # avg_font_size
             # 2. Извлекаем таблицы и распределяем текстовые блоки по ячейкам
@@ -256,7 +257,7 @@ class PdfParser:
 
                     block = DocumentBlock(
                         parsed_type=BlockParsedType.IMAGE,
-                        parsed_block_data=ParsedBlockData(
+                        parsed_data=ParsedBlockData(
                             data=ImageBlockData(
                                 width_mm=base_image["width"],
                                 height_mm=base_image["height"],
@@ -264,13 +265,14 @@ class PdfParser:
                                 saved_path=image_path,
                             ),
                             geometry=BlockGeometry(
-                                left_mm=int(image_rects[0].x0 * self.pt_to_mm),
-                                right_mm=int(image_rects[0].x1 * self.pt_to_mm),
-                                top_mm=int(image_rects[0].y0 * self.pt_to_mm),
-                                bottom_mm=int(image_rects[0].y1 * self.pt_to_mm),
+                                left_mm=int(image_rects[0].x0),
+                                right_mm=int(image_rects[0].x1),
+                                top_mm=int(image_rects[0].y0),
+                                bottom_mm=int(image_rects[0].y1),
                             ),
                             page_parameters=page_params
                         ),
+                        normalized_data=NormalizeTextBlockData()
                     )
 
                     page_blocks.append(block)
@@ -284,59 +286,59 @@ class PdfParser:
             # 2.5 - 3.0 мм обычно достаточно для учета подстрочных индексов и погрешностей.
             Y_TOLERANCE_MM = 2.5
 
-            # 1. Первичная сортировка по Y, чтобы алгоритм кластеризации работал корректно
-            page_blocks.sort(key=lambda b: b.parsed_block_data.geometry.top_mm)
-
-            lines = []
-            current_line = []
-
+            def get_center_y(block: DocumentBlock) -> float:
+                return (block.parsed_data.geometry.top_mm + block.parsed_data.geometry.bottom_mm) / 2
             
-
-            for block in page_blocks:
-                if not current_line:
+            # Сортируем по центру Y
+            sorted_blocks = sorted(page_blocks, key=get_center_y)
+            
+            lines = []
+            current_line = [sorted_blocks[0]]
+            current_line_y = get_center_y(sorted_blocks[0])
+            
+            for block in sorted_blocks[1:]:
+                block_y = get_center_y(block)
+                
+                # Если центр блока близок к центру линии — та же строка
+                if abs(block_y - current_line_y) <= Y_TOLERANCE_MM:
                     current_line.append(block)
-
-                # Берем Y первого блока в текущей строке как эталон (базовую линию)
-                ref_y = current_line[0].parsed_block_data.geometry.top_mm
-                block_y = block.parsed_block_data.geometry.top_mm
-
-                # Если блок в пределах допуска по вертикали - добавляем в текущую строку
-                if abs(block_y - ref_y) <= Y_TOLERANCE_MM:
-                    current_line.append(block) 
                 else:
-                    # Иначе сохраняем текущую строку и начинаем новую
                     lines.append(current_line)
                     current_line = [block]
-
-                avg_font_size = round(sum(tmp_font_sizes) / len(tmp_font_sizes), 1)
-                # block["relative_font_size"] = block.get("data", {}).get("typography", {}).get("size_pt", 0) / avg_font_size
-
-            # Не забываем добавить самую последнюю строку
+                    current_line_y = block_y
+            
             if current_line:
                 lines.append(current_line)
-
-            # 2. Сортируем блоки ВНУТРИ каждой строки по горизонтали (слева направо)
+            
+            # Сортируем внутри линий по left
             for line in lines:
-                line.sort(key=lambda b: b.parsed_block_data.geometry.left_mm)
+                line.sort(key=lambda b: b.parsed_data.geometry.left_mm)
+            
+            # Сплющиваем
+            for line_idx, line in enumerate(lines):
+                for block_idx, block in enumerate(line):
 
-            # 3. Сплющиваем (flatten) список строк обратно в один плоский список
-            # и сразу назначаем id в порядке чтения.
-            page_blocks = []
-            for line in lines:
-                for block in line:
                     block.id = tmp_block_id
+                    block.normalized_data.prev_block_parsed_type = list(BlockParsedType).index(BlockParsedType(tmp_prev_block_parsed_type)) if tmp_prev_block_parsed_type else 0
+                    if tmp_prev_block: tmp_prev_block.normalized_data.next_block_parsed_type = list(BlockParsedType).index(BlockParsedType(block.parsed_type))
+                    block.normalized_data.position_in_line = block_idx + 1
+                    
+                    all_blocks.append(block)
+
+                    
+                    tmp_prev_block_parsed_type = block.parsed_type
+                    tmp_prev_block = block
                     tmp_block_id += 1
-                    page_blocks.append(block)
 
-            # --- КОНЕЦ КАСТОМНОЙ СОРТИРОВКИ ---
-            blocks.extend(page_blocks)
 
-        doc.close()
+
+
+
 
         # with open("result_parser.json", "w", encoding="utf-8") as f:
         #     json.dump(parsed_document, f, ensure_ascii=False, indent=4)
-
-        return blocks
+        doc.close()
+        return all_blocks
 
     # def getTextBlocks(self, page) -> List[DocumentBlock]:
 

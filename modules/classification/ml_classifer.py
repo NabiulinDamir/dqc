@@ -80,7 +80,7 @@ class MlClassifier(BaseClassifier):
             result.label = "table"
             result.confidence = 0.0
         else:
-            current_block.normalized_block_data.text_vector = self.all_vectors[index].toarray().flatten().tolist()
+            current_block.normalized_data.text_vector = self.all_vectors[index].toarray().flatten().tolist()
             result.label = "ml_predicted_2"
             result.confidence = 0.5
 
@@ -155,8 +155,8 @@ def custom_tokenizer(text):
     return result
 
 def extracted_block_text(block: DocumentBlock) -> str:
-    if block and isinstance(block.parsed_block_data.data, TextBlockData):
-        text = block.parsed_block_data.data.text or "emptyText"
+    if block and isinstance(block.parsed_data.data, TextBlockData):
+        text = block.parsed_data.data.text or "emptyText"
     else:
         text = "emptyText"
     return text

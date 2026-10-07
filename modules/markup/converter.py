@@ -14,8 +14,8 @@ def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
 
     for block in classified_blocks:
         # 1. Проверяем наличие обязательных полей
-        label = block.classified_type
-        geometry = block.parsed_block_data.geometry
+        label = block.normalized_data.position_in_line
+        geometry = block.parsed_data.geometry
 
         if not label or not geometry:
             continue
@@ -24,13 +24,13 @@ def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
 
         # 2. Пропускаем пустые блоки и текст без нарушений (опционально)
         # Если нужно размечать ВСЁ, убери эту проверку
-        if label == "empty":
-            continue
+        # if label == "empty":
+        #     continue
 
         # 3. Создаем инструкцию разметки
         markups.append(
             Markup(
-                page=block.parsed_block_data.page_parameters.number,
+                page=block.parsed_data.page_parameters.number,
                 geometry={
                     "left_mm": float(geometry.left_mm),
                     "top_mm": float(geometry.top_mm),

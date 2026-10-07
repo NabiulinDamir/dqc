@@ -17,13 +17,21 @@ def markup_document(file_path: str, output_path: str, instructions: List[Markup]
 
         # Прямое обращение к полям — никаких индексов [0], [1]
         rect = fitz.Rect(
-            g["left_mm"] * MM_TO_PT,
-            g["top_mm"] * MM_TO_PT,
-            g["right_mm"] * MM_TO_PT,
-            g["bottom_mm"] * MM_TO_PT,
+            g["left_mm"],
+            g["top_mm"],
+            g["right_mm"],
+            g["bottom_mm"],
         )
 
         page.draw_rect(rect, color=m.get_color_by_label(), width=1.5)
+
+        page.insert_text(
+            point=(g["right_mm"], g["top_mm"]),
+            text=str(m.label),
+            fontsize=10,
+            color=(1, 0, 0),   # RGB от 0 до 1 (красный)
+            fontname="helv"    # helv, helv-bold, helv-italic, times, courier
+        )
 
     doc.save(output_path)
     doc.close()

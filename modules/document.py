@@ -4,8 +4,13 @@ from typing import Optional, List, Dict, Any
 from pathlib import Path
 import json
 
-@dataclass
+
+# ============================================================
+# region Классы
+# ============================================================
+
 class BlockClassifiedType(Enum):
+    UNKNOWN             = "unknown"
     TEXT                = "text"
     HEADING             = "heading"
     NUMBER_LIST_ITEM    = "number_list_item"
@@ -16,15 +21,12 @@ class BlockClassifiedType(Enum):
     IMAGE_CAPTION       = "image_caption"
     FORMULA             = "formula"
     FOOTER              = "footer"
-    UNKNOWN             = "unknown"
 
-
-@dataclass
 class BlockParsedType(Enum):
+    UNKNOWN     = "unknown"
     TEXT        = "text"  # Обычный параграф
     TABLE       = "table"  # Строка таблицы (упрощенно)
     IMAGE       = "image"  # Подпись к рисунку/таблице
-    UNKNOWN     = "unknown"
 
 @dataclass
 class BlockTypography:
@@ -69,22 +71,22 @@ class ParsedBlockData:
 class NormalizeTextBlockData:
     # Тектовые
     text_vector: Optional[List]                  = None  # Текстовый вектор
-    has_capital_start: Optional[int]             = None  # Начинается ли с заглавной буквы
+    has_capital_start: Optional[int]             = None  # !Начинается ли с заглавной буквы
     # Типографические
-    has_italic: Optional[int]                    = None  # Наличие курсива
-    has_blood: Optional[int]                     = None  # Наличие жирного начертания
+    has_italic: Optional[int]                    = None  # !Наличие курсива
+    has_blood: Optional[int]                     = None  # !Наличие жирного начертания
     relative_font_size: Optional[float]          = None  # Размер шрифта относительно других блоков
     relative_margin_top: Optional[float]         = None  # Относительный отступ снизу
     relative_margin_bottom: Optional[float]      = None  # Относительный отступ сверху
     # Геометрические
     relative_space_left: Optional[float]         = None  # Относительный отступ слева
     relative_height: Optional[float]             = None  # Относительная высота
-    line_position: Optional[int]                 = None  # Позиция в строке
+    position_in_line: Optional[int]              = None  # !Позиция в строке
     # Контекстные
     prev_block_style_similarity: Optional[float] = None  # Относительная схожесть с предыдущим блоком по стилевым параметрам
-    prev_classified_block_type: Optional[int]    = None  # Классифицированный тип предыдущего блока 2 - заголовок
-    prev_parsed_block_type: Optional[int]        = None  # Реальный тип предыдущего блока 2 - картинка
-    next_parsed_block_type: Optional[int]        = None  # Реальный тип следующего блока 2 - картинка
+    prev_classified_type: Optional[int]          = None  # Классифицированный тип предыдущего блока (2 - заголовок)
+    prev_block_parsed_type: Optional[int]        = None  # !Реальный тип предыдущего блока (2 - картинка)
+    next_block_parsed_type: Optional[int]        = None  # !Реальный тип следующего блока (2 - картинка)
     prev_block_text_vector: Optional[List]       = None  # Вектор текста предыдущего блока
 
 
@@ -94,8 +96,8 @@ class DocumentBlock:
     # error: Optional[BlockError] = None
     classified_type: Optional[BlockClassifiedType]          = None # Классифицированный тип блока
     parsed_type: Optional[BlockParsedType]                  = None # Реальный тип блока
-    parsed_block_data: Optional[ParsedBlockData]            = None # Данные для проверки на соответствие правилам
-    normalized_block_data: Optional[NormalizeTextBlockData] = None # Данные для классификации текста
+    parsed_data: Optional[ParsedBlockData]            = None # Данные для проверки на соответствие правилам
+    normalized_data: Optional[NormalizeTextBlockData] = None # Данные для классификации текста
 
 class Document:
     name: Optional[str]         = None
