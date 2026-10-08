@@ -1,0 +1,6 @@
+# Python
+__pycache__/
+
+# Тяжелые файлы
+classification_result.json
+extracted_images

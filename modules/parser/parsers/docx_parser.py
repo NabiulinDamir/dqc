@@ -2,9 +2,9 @@ import docx
 from docx.oxml.ns import qn
 from typing import List
 
-from models.document_block import BlockType, DocumentBlock
 
-from modules.document import BlockParsedType, BlockClassifiedType
+
+from modules.document import BlockParsedType, BlockClassifiedType, DocumentBlock
 
 class DocxParser:
     def parse(self, file_path: str) -> List[DocumentBlock]:
@@ -28,9 +28,9 @@ class DocxParser:
                 if not text:
                     continue
 
-                block_type = BlockType.TEXT
+                block_type = BlockParsedType.TEXT
                 if para._element.xpath("./w:pPr/w:numPr"):
-                    block_type = BlockType.LIST_ITEM
+                    block_type = BlockParsedType.LIST_ITEM
                     val_attr = para._element.xpath("./w:pPr/w:numPr/w:ilvl/@w:val")
                     list_level = int(val_attr[0]) if val_attr else 0
                     marker = ["•", "*", "+", "-"][list_level] if list_level < 4 else "•"
@@ -51,7 +51,7 @@ class DocxParser:
                             table_rows.append(row_text)
 
                     if table_rows:
-                        blocks.append(DocumentBlock(content="\n".join(table_rows), type=BlockType.TABLE, id=f"tbl_{table_index}"))
+                        blocks.append(DocumentBlock(content="\n".join(table_rows), type=BlockParsedType.TABLE, id=f"tbl_{table_index}"))
                         table_index += 1
 
             elif tag_name == "sdt":
@@ -65,7 +65,7 @@ class DocxParser:
                             toc_rows.append(p_text)
 
                     if toc_rows:
-                        blocks.append(DocumentBlock(content="\n".join(toc_rows), type=BlockType.TABLE, id=f"toc_{toc_index}"))
+                        blocks.append(DocumentBlock(content="\n".join(toc_rows), type=BlockParsedType.TABLE, id=f"toc_{toc_index}"))
                         toc_index += 1
 
         return blocks

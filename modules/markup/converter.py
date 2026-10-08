@@ -12,9 +12,15 @@ def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
     """
     markups: List[Markup] = []
 
-    for block in classified_blocks:
-        # 1. Проверяем наличие обязательных полей
+    for index, block in enumerate(classified_blocks):
+
+        if(block is None): continue
+
         label = block.normalized_data.position_in_line
+        
+            
+        
+        
         geometry = block.parsed_data.geometry
 
         if not label or not geometry:

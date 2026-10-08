@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 import json
+import numpy as np
 
 
 # ============================================================
@@ -15,9 +16,9 @@ class BlockClassifiedType(Enum):
     HEADING             = "heading"
     NUMBER_LIST_ITEM    = "number_list_item"
     MARKER_LIST_ITEM    = "marker_list_item"
-    TABLE               = "table"
+    # TABLE               = "table"
     TABLE_CAPTION       = "table_caption"
-    IMAGE               = "image"
+    # IMAGE               = "image"
     IMAGE_CAPTION       = "image_caption"
     FORMULA             = "formula"
     FOOTER              = "footer"
@@ -70,25 +71,38 @@ class ParsedBlockData:
 @dataclass
 class NormalizeTextBlockData:
     # Тектовые
-    text_vector: Optional[List]                  = None  # Текстовый вектор
-    has_capital_start: Optional[int]             = None  # !Начинается ли с заглавной буквы
-    # Типографические
-    has_italic: Optional[int]                    = None  # !Наличие курсива
-    has_blood: Optional[int]                     = None  # !Наличие жирного начертания
-    relative_font_size: Optional[float]          = None  # Размер шрифта относительно других блоков
-    relative_margin_top: Optional[float]         = None  # Относительный отступ снизу
-    relative_margin_bottom: Optional[float]      = None  # Относительный отступ сверху
-    # Геометрические
-    relative_space_left: Optional[float]         = None  # Относительный отступ слева
-    relative_height: Optional[float]             = None  # Относительная высота
-    position_in_line: Optional[int]              = None  # !Позиция в строке
-    # Контекстные
-    prev_block_style_similarity: Optional[float] = None  # Относительная схожесть с предыдущим блоком по стилевым параметрам
-    prev_classified_type: Optional[int]          = None  # Классифицированный тип предыдущего блока (2 - заголовок)
-    prev_block_parsed_type: Optional[int]        = None  # !Реальный тип предыдущего блока (2 - картинка)
-    next_block_parsed_type: Optional[int]        = None  # !Реальный тип следующего блока (2 - картинка)
-    prev_block_text_vector: Optional[List]       = None  # Вектор текста предыдущего блока
+    text_vector: Optional[np.ndarray]                  = None  # Текстовый вектор
+    has_capital_start: Optional[int]                   = None  # !Начинается ли с заглавной буквы
+    # Типографические      
+    has_italic: Optional[int]                          = None  # !Наличие курсива
+    has_blood: Optional[int]                           = None  # !Наличие жирного начертания
+    relative_font_size: Optional[float]                = None  # Размер шрифта относительно других блоков
+    relative_margin_top: Optional[float]               = None  # Относительный отступ снизу
+    relative_margin_bottom: Optional[float]            = None  # Относительный отступ сверху
+    # Геометрические       
+    relative_space_left: Optional[float]               = None  # Относительный отступ слева
+    relative_height: Optional[float]                   = None  # Относительная высота
+    position_in_line: Optional[int]                    = None  # !Позиция в строке
+    # Контекстные      
+    prev_block_style_similarity: Optional[float]       = None  # Относительная схожесть с предыдущим блоком по стилевым параметрам
+    prev_block_classified_type: Optional[int]          = None  # Классифицированный тип предыдущего блока (2 - заголовок)
+    prev_block_parsed_type: Optional[int]              = None  # !Реальный тип предыдущего блока (2 - картинка)
+    next_block_parsed_type: Optional[int]              = None  # !Реальный тип следующего блока (2 - картинка)
+    prev_block_text_vector: Optional[np.ndarray]       = None  # Вектор текста предыдущего блока
 
+    def to_vector(self) -> np.ndarray:
+        from dataclasses import fields
+        scalars = [
+            getattr(self, f.name) if getattr(self, f.name) is not None else 0.0
+            for f in fields(self)
+            if 'vector' not in f.name
+        ]
+        vectors = [
+            np.array(getattr(self, f.name))
+            for f in fields(self)
+            if 'vector' in f.name and getattr(self, f.name) is not None
+        ]
+        return np.concatenate([scalars] + vectors) if vectors else np.array(scalars)
 
 @dataclass
 class DocumentBlock:
@@ -113,7 +127,7 @@ class Document:
         self.blocks = parser.parse(self.path) 
 
     def classify(self, classifier):
-        self.blocks = classifier.classify(self.blocks)
+        classifier.classify(self.blocks)
 
     def markup(self, marker, output_path: str):
         # Здесь можно реализовать логику разметки документа на основе self.blocks
@@ -126,10 +140,12 @@ class CustomEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Enum):
             return obj.value
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()  
+        elif isinstance(obj, np.generic):
+            return obj.item()   
         elif inspect.isclass(obj):
-            # Это сам класс — берём его атрибуты как обычный dict
             return {k: v for k, v in obj.__dict__.items() if not k.startswith('__')}
         elif hasattr(obj, "__dict__"):
-            # Это экземпляр класса
             return obj.__dict__
         return super().default(obj)

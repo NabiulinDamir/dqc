@@ -1,17 +1,20 @@
 from typing import Any, Dict, List, Optional
 from .base import BaseClassifier, ClassificationResult
 
-import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
-import pymorphy3
+from sklearn.ensemble import RandomForestClassifier
 from nltk.tokenize import WordPunctTokenizer
 from nltk.corpus import stopwords
+import numpy as np
+import pymorphy3
+import joblib
 import re
 
 from ..document import (
     DocumentBlock,
     TextBlockData,
-    BlockParsedType
+    BlockParsedType,
+    BlockClassifiedType
 )
 
 # Инициализация инструментов
@@ -24,12 +27,13 @@ class MlClassifier(BaseClassifier):
 
     def __init__(self):
         super().__init__(name="ml")
+        self.rf_model = None
         self.vectorizer = None
         self.all_vectors = None
 
 # region Классификация
 
-    def classify(self, blocks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def classify(self, blocks: List[DocumentBlock]):
         previous_block = None
         current_block = None
         next_block = None
@@ -46,7 +50,6 @@ class MlClassifier(BaseClassifier):
 
         print(len(blocks))
 
-        classifed_blocks = []
         for index, block in enumerate(blocks):
 
             previous_block = current_block
@@ -55,50 +58,86 @@ class MlClassifier(BaseClassifier):
 
             if current_block is None: continue
 
-            classifed_block: DocumentBlock = current_block
 
-            classifed_block.classified_type = self.classify_three_blocks(previous_block, current_block, next_block, index - 1).label
+            self.classify_curr_blocks(previous_block, current_block, next_block, index - 1)
 
-            classifed_blocks.append(classifed_block)
 
-        return classifed_blocks
 
-    def classify_three_blocks(
+    def classify_curr_blocks(
         self,
         previous_block: DocumentBlock,
         current_block: DocumentBlock,
         next_block: DocumentBlock,
         index,
-    ) -> ClassificationResult:
-
-        result = ClassificationResult(label="empty", confidence=0.0, metadata={})
-
-        if (current_block.parsed_type == BlockParsedType.IMAGE):
-            result.label = "image"
-            result.confidence = 0.0
-        elif (current_block.parsed_type == BlockParsedType.TABLE):
-            result.label = "table"
-            result.confidence = 0.0
-        else:
-            # current_block.normalized_data.text_vector = self.all_vectors[index].toarray().flatten().tolist()
-            result.label = "ml_predicted_2"
-            result.confidence = 0.5
-
-        return result
+    ):
 
 
+        # current_block.normalized_data.text_vector = self.all_vectors[index].toarray().flatten().tolist()
+        current_block.normalized_data.prev_block_classified_type = list(BlockClassifiedType).index(BlockClassifiedType(previous_block.classified_type)) if previous_block else 0
 
-# endregion
-# region Векторизатор
+        vector = current_block.normalized_data.to_vector()
 
+        
+        current_block.classified_type = BlockClassifiedType.TEXT
 
+        
 
-    def train(self, blocks: List[Dict[str, Any]]):
+    def train(self, blocks: List[DocumentBlock]):
         # Создание нового словаря
         train_block_text = [extracted_block_text(block) for block in blocks]
         self.create_dictionary(train_block_text)
+        # Создание нового классификатора
+        self.rf_model = self.get_new_model()
 
-        # 
+        X_train = np.array([
+            block.normalized_data.to_vector() 
+            for block in blocks 
+            if block.normalized_data is not None
+        ])
+
+        # self.train_rf()
+
+
+# endregion
+# ============================================================
+# region Random Forest
+# ============================================================
+
+
+    def get_new_model():
+        rf_model = RandomForestClassifier(
+            n_estimators=100,
+            max_depth=None,
+            min_samples_split=2,
+            random_state=42,
+            n_jobs=-1
+        )
+        return rf_model
+    
+    def train_rf(self, X_train, y_train):
+        """Обучение Random Forest на нормализованных признаках строк"""
+        self.rf_model.fit(X_train, y_train)
+        
+    def save_rf(self, filepath):
+        """Сохранение обученной модели RF"""
+        joblib.dump(self.rf_model, filepath)
+    
+    def load_rf(self, filepath):
+        """Загрузка модели RF"""
+        self.rf_model = joblib.load(filepath)
+    
+    def predict_rf(self, X, return_proba=False):
+        """Классификация строк (для передачи в CRF)"""
+        if return_proba:
+            return self.rf_model.predict_proba(X)
+        return self.rf_model.predict(X)
+
+
+# endregion
+# ============================================================
+#  region Словарь
+# ============================================================
+
 
     def create_dictionary(self, train_blocks_text):
         """
@@ -124,9 +163,10 @@ class MlClassifier(BaseClassifier):
         return vectorizer
 
 
-
 # endregion
-# region Вспомагательные
+# ============================================================
+#  region Вспомогательные
+# ============================================================
 
 
 

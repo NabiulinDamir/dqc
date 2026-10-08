@@ -31,22 +31,22 @@ def main():
     parser.add_argument(
         "file_path",
         nargs="?",
-        default=str(PROJECT_ROOT / "docx" / "дипломпдф(разметка).pdf"),
+        default=str(PROJECT_ROOT / "data/input" / "дипломпдф(разметка).pdf"),
         help="Путь к документу",
     )
     parser.add_argument(
         "--parser_output",
-        default=str(PROJECT_ROOT / "output" / "parser_result.json"),
+        default=str(PROJECT_ROOT / "data/output" / "parser_result.json"),
         help="Путь для сохранения результата парсера",
     )
     parser.add_argument(
         "--classification_output",
-        default=str(PROJECT_ROOT / "output" / "classification_result.json"),
+        default=str(PROJECT_ROOT / "data/output" / "classification_result.json"),
         help="Путь для сохранения результата классификации",
     )
     parser.add_argument(
         "--marked_output",
-        default=str(PROJECT_ROOT / "output" / "marked_result.pdf"),
+        default=str(PROJECT_ROOT / "data/output" / "marked_result.pdf"),
         help="Путь для сохранения результата разметки",
     )
     parser.add_argument(
