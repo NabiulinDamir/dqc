@@ -20,7 +20,7 @@ from ...document import (
 class PdfParser:
 
     def __init__(self):
-        self.pt_to_mm = 25.4 / 72
+        self.pt_to = 25.4 / 72
         # self.HEADER_ZONE_LIMIT_MM = 15.0
         # self.FOOTER_ZONE_LIMIT_MM = 270.0
 
@@ -42,13 +42,13 @@ class PdfParser:
 
             page_params = PageParameters(
                 number=page_id + 1,
-                width_mm=round(page.rect.width, 1),
-                height_mm=round(page.rect.height, 1)
+                width=round(page.rect.width, 1),
+                height=round(page.rect.height, 1)
             )
 
             # ___________ Временные значения страницы ___________
             tmp_font_sizes = []
-
+            tmp_left_paddings = []
             # ___________________________________________________
 
             page_blocks = []
@@ -70,9 +70,15 @@ class PdfParser:
 
                         
                         tmp_font_sizes.append(t_size)
+                        tmp_left_paddings.append(span.get("bbox", 0)[0])
 
-                        # line_top_y = line["bbox"][1] * self.pt_to_mm
-                        # t_height = line["bbox"][3] * self.pt_to_mm - line["bbox"][1] * self.pt_to_mm
+                        p_left     = span.get("bbox", 0)[0]
+                        p_right    = span.get("bbox", 0)[2]
+                        p_top      = span.get("bbox", 0)[1]
+                        p_bottom   = span.get("bbox", 0)[3]
+
+                        # line_top_y = line["bbox"][1] * self.pt_to
+                        # t_height = line["bbox"][3] * self.pt_to - line["bbox"][1] * self.pt_to
                         # height_difference = abs(line_top_y - prev_line_y)
 
                         typography_params = BlockTypography(
@@ -87,19 +93,22 @@ class PdfParser:
                                 data=TextBlockData(text=t_text),
                                 typography= typography_params,
                                 geometry=BlockGeometry(
-                                    left_mm     = span.get("bbox", 0)[0],
-                                    right_mm    = span.get("bbox", 0)[2],
-                                    top_mm      = span.get("bbox", 0)[1],
-                                    bottom_mm   = span.get("bbox", 0)[3]
+                                    left   = p_left,
+                                    right  = p_right,
+                                    top    = p_top,
+                                    bottom = p_bottom 
                                 ),
                                 page_parameters=page_params,
                             ),
                             normalized_data=NormalizeTextBlockData(
                                 has_italic=(typography_params.font_name is not None and "Italic" in typography_params.font_name) and 1 or 0,
-                                has_blood = (typography_params.font_name is not None and "Bold" in typography_params.font_name) and 1 or 0,
-                                has_capital_start = (t_text[0].isalpha() and t_text[0].isupper()) and 1 or 0,
-                                
-
+                                has_blood=(typography_params.font_name is not None and "Bold" in typography_params.font_name) and 1 or 0,
+                                has_capital_start=(t_text[0].isalpha() and t_text[0].isupper()) and 1 or 0,
+                                proportion_capital_letters=round(sum(c.isupper() for c in t_text) / max(1, sum(c.isalpha() for c in t_text)), 2),
+                                relative_space_left = round(p_left / page_params.width, 2),
+                                relative_space_top = round(p_top / page_params.height, 2),
+                                relative_height=round((p_bottom - p_top) / page_params.height, 3)
+                            
                             ),
                         )
 
@@ -149,7 +158,7 @@ class PdfParser:
             #                         )
 
             #                         # Переводим координаты ячейки в mm, чтобы сравнивать с вашей геометрией текстовых блоков
-            #                         cell_bbox_mm = None
+            #                         cell_bbox = None
             #                         if cell_bbox:
             #                             # Если cell_bbox это объект, у него есть кортеж координат, либо это сам кортеж
             #                             bbox_coords = (
@@ -157,8 +166,8 @@ class PdfParser:
             #                                 if hasattr(cell_bbox, "bbox")
             #                                 else cell_bbox
             #                             )
-            #                             cell_bbox_mm = [
-            #                                 coord * self.pt_to_mm
+            #                             cell_bbox = [
+            #                                 coord * self.pt_to
             #                                 for coord in bbox_coords
             #                             ]
 
@@ -172,16 +181,16 @@ class PdfParser:
             #                                     else ""
             #                                 ),
             #                                 "blocks": [],  # СЮДА ПЕРЕМЕСТЯТСЯ ТЕКСТОВЫЕ БЛОКИ
-            #                                 "_bbox_mm": cell_bbox_mm,  # Временное поле для фильтрации
+            #                                 "_bbox": cell_bbox,  # Временное поле для фильтрации
             #                             }
             #                         )
 
             #                 bbox = tab.bbox
             #                 structured_table["geometry"] = {
-            #                     "left_mm": int(bbox[0] * self.pt_to_mm),
-            #                     "top_mm": int(bbox[1] * self.pt_to_mm),
-            #                     "right_mm": int(bbox[2] * self.pt_to_mm),
-            #                     "bottom_mm": int(bbox[3] * self.pt_to_mm),
+            #                     "left": int(bbox[0] * self.pt_to),
+            #                     "top": int(bbox[1] * self.pt_to),
+            #                     "right": int(bbox[2] * self.pt_to),
+            #                     "bottom": int(bbox[3] * self.pt_to),
             #                 }
 
             #                 extracted_tables.append(structured_table)
@@ -199,14 +208,14 @@ class PdfParser:
 
             #             geom = block["geometry"]
             #             # Считаем центр текстового блока в mm
-            #             block_center_x = (geom["left_mm"] + geom["right_mm"]) / 2
-            #             block_center_y = (geom["top_mm"] + geom["bottom_mm"]) / 2
+            #             block_center_x = (geom["left"] + geom["right"]) / 2
+            #             block_center_y = (geom["top"] + geom["bottom"]) / 2
 
             #             assigned_to_cell = False
 
             #             for table in extracted_tables:
             #                 for cell in table["data"]["cells"]:
-            #                     c_box = cell["_bbox_mm"]
+            #                     c_box = cell["_bbox"]
             #                     if c_box:
             #                         # Проверяем, попадает ли центр текстового блока в границы ячейки (в mm)
             #                         if (
@@ -226,7 +235,7 @@ class PdfParser:
             #         # Очищаем временные bboxes и переносим таблицы в основной массив
             #         for table in extracted_tables:
             #             for cell in table["data"]["cells"]:
-            #                 cell.pop("_bbox_mm", None)
+            #                 cell.pop("_bbox", None)
             #             standalone_blocks.append(table)
 
             #         # Обновляем итоговый массив блоков страницы
@@ -259,16 +268,16 @@ class PdfParser:
                         parsed_type=BlockParsedType.IMAGE,
                         parsed_data=ParsedBlockData(
                             data=ImageBlockData(
-                                width_mm=base_image["width"],
-                                height_mm=base_image["height"],
+                                width=base_image["width"],
+                                height=base_image["height"],
                                 ext=base_image["ext"],
                                 saved_path=image_path,
                             ),
                             geometry=BlockGeometry(
-                                left_mm=int(image_rects[0].x0),
-                                right_mm=int(image_rects[0].x1),
-                                top_mm=int(image_rects[0].y0),
-                                bottom_mm=int(image_rects[0].y1),
+                                left=int(image_rects[0].x0),
+                                right=int(image_rects[0].x1),
+                                top=int(image_rects[0].y0),
+                                bottom=int(image_rects[0].y1),
                             ),
                             page_parameters=page_params
                         ),
@@ -280,19 +289,29 @@ class PdfParser:
                 except Exception:
                     continue
 
+
+
             # --- НАЧАЛО КАСТОМНОЙ СОРТИРОВКИ ПО ПОРЯДКУ ЧТЕНИЯ ---
-            # Допуск по вертикали (в мм). Если разница в top_mm меньше этого значения,
+            # Допуск по вертикали (в мм). Если разница в top меньше этого значения,
             # считаем блоки находящимися на одной строке.
             # 2.5 - 3.0 мм обычно достаточно для учета подстрочных индексов и погрешностей.
             Y_TOLERANCE_MM = 2.5
 
+
+            # ___________ Временные значения страницы ___________
+            median_font_size = sorted(tmp_font_sizes)[len(tmp_font_sizes) // 2] if tmp_font_sizes else 12
+            median_left_paddings = sorted(tmp_left_paddings)[len(tmp_left_paddings) // 2] if tmp_left_paddings else 12
+            # ___________________________________________________
+
+
+
             def get_center_y(block: DocumentBlock) -> float:
-                return (block.parsed_data.geometry.top_mm + block.parsed_data.geometry.bottom_mm) / 2
+                return (block.parsed_data.geometry.top + block.parsed_data.geometry.bottom) / 2
             
             # Сортируем по центру Y
-            sorted_blocks = sorted(page_blocks, key=get_center_y)
+            sorted_blocks: List[DocumentBlock] = sorted(page_blocks, key=get_center_y)
             
-            lines = []
+            lines: List[List[DocumentBlock]]= []
             current_line = [sorted_blocks[0]]
             current_line_y = get_center_y(sorted_blocks[0])
             
@@ -312,17 +331,27 @@ class PdfParser:
             
             # Сортируем внутри линий по left
             for line in lines:
-                line.sort(key=lambda b: b.parsed_data.geometry.left_mm)
+                line.sort(key=lambda b: b.parsed_data.geometry.left)
             
             # Сплющиваем
+            lines_count = len(lines)
+
             for line_idx, line in enumerate(lines):
+                block_count = len(line)
                 for block_idx, block in enumerate(line):
 
                     block.id = tmp_block_id
                     block.normalized_data.prev_block_parsed_type = list(BlockParsedType).index(BlockParsedType(tmp_prev_block_parsed_type)) if tmp_prev_block_parsed_type else 0
                     if tmp_prev_block: tmp_prev_block.normalized_data.next_block_parsed_type = list(BlockParsedType).index(BlockParsedType(block.parsed_type))
-                    block.normalized_data.position_in_line = block_idx + 1
-                    
+                    block.normalized_data.position_in_page = round((line_idx) / (lines_count - 1), 2)
+
+
+                    if(block.parsed_type == BlockParsedType.TEXT):
+                        block.normalized_data.position_in_line = round(block_idx / (block_count - 1), 2) if block_count > 1 else 0.0
+                        block.normalized_data.relative_font_size    = round(block.parsed_data.typography.font_size / median_font_size, 2)
+                        
+                        
+                        
                     all_blocks.append(block)
 
                     

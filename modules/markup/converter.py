@@ -16,14 +16,14 @@ def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
 
         if(block is None): continue
 
-        label = block.normalized_data.position_in_line
+        label = block.normalized_data.relative_space_top
         
             
         
         
         geometry = block.parsed_data.geometry
 
-        if not label or not geometry:
+        if label is None or not geometry:
             continue
 
         # label = classification.get("label", "unknown")
@@ -38,10 +38,10 @@ def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
             Markup(
                 page=block.parsed_data.page_parameters.number,
                 geometry={
-                    "left_mm": float(geometry.left_mm),
-                    "top_mm": float(geometry.top_mm),
-                    "right_mm": float(geometry.right_mm),
-                    "bottom_mm": float(geometry.bottom_mm),
+                    "left": float(geometry.left),
+                    "top": float(geometry.top),
+                    "right": float(geometry.right),
+                    "bottom": float(geometry.bottom),
                 },
                 label=label,
             )

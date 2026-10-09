@@ -34,13 +34,8 @@ class MlClassifier(BaseClassifier):
 # region Классификация
 
     def classify(self, blocks: List[DocumentBlock]):
-        previous_block = None
-        current_block = None
-        next_block = None
-
-        blocks.append(None)
-
         path = 'modules/classification/model/tfidf_vectorizer.pkl'
+
         self.vectorizer = joblib.load(path)
         all_texts = [extracted_block_text(block) for block in blocks]
         self.all_vectors = self.vectorizer.transform(all_texts)
@@ -48,35 +43,22 @@ class MlClassifier(BaseClassifier):
         print("Вектор документа создан")
         print(f"Матрица: {self.all_vectors.shape}")
 
-        print(len(blocks))
-
         for index, block in enumerate(blocks):
+            block.normalized_data.prev_block_classified_type = BlockClassifiedType.index(blocks[index-1].classified_type)
+            self.classify_one_block(block, index)
+            
 
-            previous_block = current_block
-            current_block = next_block
-            next_block = block
-
-            if current_block is None: continue
-
-
-            self.classify_curr_blocks(previous_block, current_block, next_block, index - 1)
-
-
-
-    def classify_curr_blocks(
+    def classify_one_block(
         self,
-        previous_block: DocumentBlock,
         current_block: DocumentBlock,
-        next_block: DocumentBlock,
         index,
     ):
 
+        text_vector = self.all_vectors[index].toarray().flatten().tolist()
+        block_patterns = current_block.normalized_data.to_vector()
+        vector = np.concatenate([block_patterns, text_vector]) 
 
-        # current_block.normalized_data.text_vector = self.all_vectors[index].toarray().flatten().tolist()
-        current_block.normalized_data.prev_block_classified_type = list(BlockClassifiedType).index(BlockClassifiedType(previous_block.classified_type)) if previous_block else 0
-
-        vector = current_block.normalized_data.to_vector()
-
+        # ml_pledict = self.predict_rf(vector)
         
         current_block.classified_type = BlockClassifiedType.TEXT
 

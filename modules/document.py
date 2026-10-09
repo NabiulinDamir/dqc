@@ -23,6 +23,15 @@ class BlockClassifiedType(Enum):
     FORMULA             = "formula"
     FOOTER              = "footer"
 
+    @staticmethod
+    def index(enum_value) -> int:
+        """Возвращает индекс элемента Enum (0-based)"""
+        if isinstance(enum_value, BlockClassifiedType):
+            return list(BlockClassifiedType).index(enum_value)
+        elif isinstance(enum_value, str):
+            return list(BlockClassifiedType).index(BlockClassifiedType(enum_value))
+        return 0 
+
 class BlockParsedType(Enum):
     UNKNOWN     = "unknown"
     TEXT        = "text"  # Обычный параграф
@@ -37,16 +46,16 @@ class BlockTypography:
 
 @dataclass
 class BlockGeometry:
-    left_mm: Optional[float]    = None  # Координата X (например, левый верхний угол)
-    top_mm: Optional[float]     = None  # Координата Y (например, левый верхний угол)
-    right_mm: Optional[float]   = None  # Координата X (например, правый нижний угол)
-    bottom_mm: Optional[float]  = None  # Координата Y (например,
+    left: Optional[float]    = None  # Координата X (например, левый верхний угол)
+    top: Optional[float]     = None  # Координата Y (например, левый верхний угол)
+    right: Optional[float]   = None  # Координата X (например, правый нижний угол)
+    bottom: Optional[float]  = None  # Координата Y (например,
 
 @dataclass
 class PageParameters:
     number: Optional[int]       = None  # Номер страницы
-    width_mm: Optional[float]   = None  # Ширина страницы
-    height_mm: Optional[float]  = None  # Высота страницы
+    width: Optional[float]   = None  # Ширина страницы
+    height: Optional[float]  = None  # Высота страницы
 
 @dataclass
 class TextBlockData:
@@ -57,8 +66,8 @@ class TextBlockData:
 class ImageBlockData:  
     # Картинки
     saved_path: Optional[str]   = None  # Путь к сохраненной картинке
-    width_mm: Optional[float]   = None  # Ширина картинки
-    height_mm: Optional[float]  = None  # Высота картинки
+    width: Optional[float]   = None  # Ширина картинки
+    height: Optional[float]  = None  # Высота картинки
     ext: Optional[str] = None
 
 @dataclass
@@ -71,24 +80,27 @@ class ParsedBlockData:
 @dataclass
 class NormalizeTextBlockData:
     # Тектовые
-    text_vector: Optional[np.ndarray]                  = None  # Текстовый вектор
+    # text_vector: Optional[np.ndarray]                  = None  # Текстовый вектор
     has_capital_start: Optional[int]                   = None  # !Начинается ли с заглавной буквы
+    proportion_capital_letters: Optional[float]        = None  # !Доля заглавных букв в тексте
     # Типографические      
     has_italic: Optional[int]                          = None  # !Наличие курсива
     has_blood: Optional[int]                           = None  # !Наличие жирного начертания
-    relative_font_size: Optional[float]                = None  # Размер шрифта относительно других блоков
-    relative_margin_top: Optional[float]               = None  # Относительный отступ снизу
-    relative_margin_bottom: Optional[float]            = None  # Относительный отступ сверху
+    relative_font_size: Optional[float]                = None  # !Размер шрифта относительно других блоков
+    relative_margin_top: Optional[float]               = None  # Относительный отступ снизу до сл. строки
+    relative_margin_bottom: Optional[float]            = None  # Относительный отступ сверху до пр. строки
     # Геометрические       
-    relative_space_left: Optional[float]               = None  # Относительный отступ слева
-    relative_height: Optional[float]                   = None  # Относительная высота
+    relative_space_left: Optional[float]               = None  # !Относительный отступ слева 0.5 - середина страницы
+    relative_space_top: Optional[float]                = None  # !Позиция относительно страницы 0.5 - середина
+    relative_height: Optional[float]                   = None  # !Высота относительно страницы ---
     position_in_line: Optional[int]                    = None  # !Позиция в строке
+    position_in_page: Optional[int]                    = None  # !Позиция строки в документе
     # Контекстные      
     prev_block_style_similarity: Optional[float]       = None  # Относительная схожесть с предыдущим блоком по стилевым параметрам
-    prev_block_classified_type: Optional[int]          = None  # Классифицированный тип предыдущего блока (2 - заголовок)
+    prev_block_classified_type: Optional[int]          = None  # !Классифицированный тип предыдущего блока (2 - заголовок)
     prev_block_parsed_type: Optional[int]              = None  # !Реальный тип предыдущего блока (2 - картинка)
     next_block_parsed_type: Optional[int]              = None  # !Реальный тип следующего блока (2 - картинка)
-    prev_block_text_vector: Optional[np.ndarray]       = None  # Вектор текста предыдущего блока
+    # prev_block_text_vector: Optional[np.ndarray]       = None  # Вектор текста предыдущего блока
 
     def to_vector(self) -> np.ndarray:
         from dataclasses import fields

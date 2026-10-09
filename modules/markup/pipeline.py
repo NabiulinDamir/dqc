@@ -17,16 +17,16 @@ def markup_document(file_path: str, output_path: str, instructions: List[Markup]
 
         # Прямое обращение к полям — никаких индексов [0], [1]
         rect = fitz.Rect(
-            g["left_mm"],
-            g["top_mm"],
-            g["right_mm"],
-            g["bottom_mm"],
+            g["left"],
+            g["top"],
+            g["right"],
+            g["bottom"],
         )
 
         page.draw_rect(rect, color=m.get_color_by_label(), width=1.5)
 
         page.insert_text(
-            point=(g["right_mm"], g["top_mm"]),
+            point=(g["right"], g["top"]),
             text=str(m.label),
             fontsize=10,
             color=(1, 0, 0),   # RGB от 0 до 1 (красный)
