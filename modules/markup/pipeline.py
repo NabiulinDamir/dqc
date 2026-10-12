@@ -2,6 +2,7 @@ from typing import List
 from .base import Markup
 import fitz
 
+from ..classification.marker import MarkerClassifier
 
 def markup_document(file_path: str, output_path: str, instructions: List[Markup]) -> fitz.Document:
     doc = fitz.open(file_path)

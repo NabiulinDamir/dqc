@@ -3,11 +3,14 @@ from typing import Any, Dict, List
 
 from .rule_based import RuleBasedClassifier
 from .ml_classifer import MlClassifier
+from .marker import MarkerClassifier
 
 from modules.document import Document, DocumentBlock, BlockParsedType, BlockClassifiedType
 
 def get_classifier(method: str):
     match(method):
+        case "marker":
+            return MarkerClassifier()
         case "ml":
             return MlClassifier()
         case "rule_based":

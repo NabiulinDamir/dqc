@@ -3,12 +3,13 @@ import json
 import sys
 import time
 from pathlib import Path
+from typing import List
 import fitz
 
 import webbrowser
 import os
 
-from modules.document import Document, CustomEncoder
+from modules.document import Document, CustomEncoder, DocumentBlock
 
 # Настройка путей проекта
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -16,7 +17,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from modules.parser.pipeline import get_parser
-from modules.classification.pipeline import classify_blocks, get_classifier
+from modules.classification.pipeline import get_classifier
 from modules.markup.pipeline import markup_document
 from modules.markup.converter import blocks_to_markup
 
@@ -31,7 +32,7 @@ def main():
     parser.add_argument(
         "file_path",
         nargs="?",
-        default=str(PROJECT_ROOT / "data/input" / "дипломпдф(разметка).pdf"),
+        default=str(PROJECT_ROOT / "data/input" / "дипломпдф.pdf"),
         help="Путь к документу",
     )
     parser.add_argument(
@@ -61,7 +62,18 @@ def main():
         default="new",
         help="Результат парсинга: парсить новый или использовать уже существующий",
     )
+    parser.add_argument(
+        '--train',
+        action='store_true',
+        help='Запустить только обучение модели'
+    )
+
     args = parser.parse_args()
+
+
+    if args.train:
+        train_ml_classifer("data/train") 
+
 
     input_path = Path(args.file_path)
     if not input_path.is_absolute():
@@ -88,7 +100,7 @@ def main():
     print(f"[TIMING] Парсинг завершен: {time.time() - start_time:.2f} с")
 
     # 2. Обучение классификатора (если выбран метод ml)
-    # train_ml_classifer(new_document.blocks)
+    # train_ml_classifer("data/train")
     # print(f"[TIMING] Обучение завершено: {time.time() - start_time:.2f} с")
 
     # 3. Классификация извлеченных блоков (добавление типов)
@@ -138,13 +150,34 @@ def save_pdf_to_json(pdf_path, output_path):
     print(f"Данные успешно сохранены в {output_path}")
 
 
-def train_ml_classifer(train_data_path: str):
-    # Загрузить каждый документ
-
+def train_ml_classifer(folder: str):
     # Распарсить каждый документ и сложить блоки
+    print("[INFO] Начало обучения ------------------------------------------------------")
+    start_time = time.time()
 
-    # Обучить классификатор на списке всех блоков
+    all_blocks: List[DocumentBlock] = []
 
+    # _________________Маркированные_________________
+    folder_marker = Path(folder) / "marked"  # Правильно: сразу получаем Path
+    pdf_files = list(folder_marker.glob("*.pdf"))
+    print(pdf_files)
+
+    for file in pdf_files:
+        new_document = Document(file)
+        new_document.parse(get_parser(file))
+        all_blocks.extend(new_document.blocks)
+
+
+    marker_classifer = get_classifier("marker")
+    classify_data = marker_classifer.classify(all_blocks)
+
+    save_json(Path("data/output/train_blocks_classiffy.json"), classify_data)
+
+    ml_classifer = get_classifier("ml")
+    ml_classifer.train(classify_data)
+
+    print(f"[TIMING] Общее время выполнения: {time.time() - start_time:.2f} с")
+    print("[INFO] Конец обучения ------------------------------------------------------")
     return
 
 if __name__ == "__main__":

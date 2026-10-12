@@ -22,6 +22,10 @@ class BlockClassifiedType(Enum):
     IMAGE_CAPTION       = "image_caption"
     FORMULA             = "formula"
     FOOTER              = "footer"
+    CONTENT_ITEM        = "content_item"
+    LISTING             = "listing"
+    LISTING_CAPTION     = "listing_caption"
+    LITERATURE_ITEM     = "literature_item"
 
     @staticmethod
     def index(enum_value) -> int:
@@ -122,17 +126,18 @@ class DocumentBlock:
     # error: Optional[BlockError] = None
     classified_type: Optional[BlockClassifiedType]          = None # Классифицированный тип блока
     parsed_type: Optional[BlockParsedType]                  = None # Реальный тип блока
-    parsed_data: Optional[ParsedBlockData]            = None # Данные для проверки на соответствие правилам
-    normalized_data: Optional[NormalizeTextBlockData] = None # Данные для классификации текста
+    parsed_data: Optional[ParsedBlockData]                  = None # Данные для проверки на соответствие правилам
+    normalized_data: Optional[NormalizeTextBlockData]       = None # Данные для классификации текста
 
 class Document:
     name: Optional[str]         = None
     path: Optional[str]         = None  # Путь к файлу документа (если известен)
     blocks: List[DocumentBlock] = []    # Список блоков документа
 
-    def __init__(self, path: str):
-        self.name = Path(path).stem
-        self.path = str(path)
+    def __init__(self, path: str | Path):  # Принимаем оба типа
+        path_obj = Path(path)
+        self.name = path_obj.stem
+        self.path = str(path_obj)
         self.blocks = []
 
     def parse(self, parser):
