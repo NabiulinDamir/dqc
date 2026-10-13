@@ -3,6 +3,7 @@ from modules.markup.base import Markup
 
 from ..document import (
     DocumentBlock,
+    BlockClassifiedType
 )
 
 def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:

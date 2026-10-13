@@ -67,13 +67,36 @@ def main():
         action='store_true',
         help='Запустить только обучение модели'
     )
+    parser.add_argument(
+        '--test',
+        action='store_true',
+        help='Протестировать модель после обучения'
+    )
+    parser.add_argument(
+        '--classify',
+        action='store_true',
+        help='Запустить только классификацию'
+    )
+    parser.add_argument(
+        '--parse',
+        action='store_true',
+        help='Запустить только парсинг'
+    )
+
 
     args = parser.parse_args()
 
-
     if args.train:
         train_ml_classifer("data/train") 
+        return
 
+    if args.test:
+        test_ml_classifer("data/test")
+        return
+
+    if(not args.classify and not args.parse):
+        train_ml_classifer("data/train") 
+        test_ml_classifer("data/test")
 
     input_path = Path(args.file_path)
     if not input_path.is_absolute():
@@ -85,11 +108,7 @@ def main():
     start_time = time.time()
     print("[TIMING] Начало обработки ------------------------------------------------------")
 
-    # Создание нового документа
     new_document: Document = Document(input_path)
-
-    # save_pdf_to_json(input_path, args.parser_output)
-    # 1. Извлечение текста и геометрии
     
     if(args.parse_result == 'new'):
         new_document.parse(get_parser(input_path))
@@ -99,12 +118,8 @@ def main():
     save_json(Path(args.parser_output), new_document)
     print(f"[TIMING] Парсинг завершен: {time.time() - start_time:.2f} с")
 
-    # 2. Обучение классификатора (если выбран метод ml)
-    # train_ml_classifer("data/train")
-    # print(f"[TIMING] Обучение завершено: {time.time() - start_time:.2f} с")
+    if args.parse: return
 
-    # 3. Классификация извлеченных блоков (добавление типов)
-    # classified_blocks = classify_blocks(new_document.blocks, method=args.classification)
     new_document.classify(get_classifier(args.classification))
     print(f"[TIMING] Классификация завершена: {time.time() - start_time:.2f} с")
     save_json(Path(args.classification_output), new_document.blocks)
@@ -155,18 +170,7 @@ def train_ml_classifer(folder: str):
     print("[INFO] Начало обучения ------------------------------------------------------")
     start_time = time.time()
 
-    all_blocks: List[DocumentBlock] = []
-
-    # _________________Маркированные_________________
-    folder_marker = Path(folder) / "marked"  # Правильно: сразу получаем Path
-    pdf_files = list(folder_marker.glob("*.pdf"))
-    print(pdf_files)
-
-    for file in pdf_files:
-        new_document = Document(file)
-        new_document.parse(get_parser(file))
-        all_blocks.extend(new_document.blocks)
-
+    all_blocks = get_blocks_from_folder(folder + "/marked")
 
     marker_classifer = get_classifier("marker")
     classify_data = marker_classifer.classify(all_blocks)
@@ -179,6 +183,30 @@ def train_ml_classifer(folder: str):
     print(f"[TIMING] Общее время выполнения: {time.time() - start_time:.2f} с")
     print("[INFO] Конец обучения ------------------------------------------------------")
     return
+
+def test_ml_classifer(folder: str):
+    print("[INFO] Начало тестирования ------------------------------------------------------")
+    all_blocks = get_blocks_from_folder(folder)
+    marker_classifer = get_classifier("marker")
+    classify_data = marker_classifer.classify(all_blocks)
+    ml_classifer = get_classifier("ml")
+    ml_classifer.test(all_blocks)
+    print("[INFO] Конец тестирования -------------------------------------------------------")
+    
+
+def get_blocks_from_folder(path: str):
+    all_blocks: List[DocumentBlock] = []
+    folder_marker = Path(path)
+    pdf_files = list(folder_marker.glob("*.pdf"))
+    for file in pdf_files:
+        print(file)
+        all_blocks.extend(get_blocks_from_document(file))
+    return all_blocks
+
+def get_blocks_from_document(path: str):
+    new_document = Document(path)
+    new_document.parse(get_parser(path))
+    return new_document.blocks
 
 if __name__ == "__main__":
     main()

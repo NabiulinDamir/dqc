@@ -1,14 +1,19 @@
 from typing import Any, Dict, List, Optional
 from .base import BaseClassifier, ClassificationResult
 
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from nltk.tokenize import WordPunctTokenizer
 from nltk.corpus import stopwords
+from collections import Counter
 import numpy as np
 import pymorphy3
 import joblib
 import re
+
+
+
 
 from ..document import (
     DocumentBlock,
@@ -31,15 +36,16 @@ class MlClassifier(BaseClassifier):
         self.vectorizer = None
         # self.all_vectors = None
         self.context_length = (1,1)
+        self.path_vectorizer = 'modules/classification/model/tfidf_vectorizer.pkl'
+        self.path_classifier = "modules/classification/model/rf_classifier.pkl"
 
 # region Классификация
 
     def classify(self, blocks: List[DocumentBlock]) -> List[DocumentBlock]:
-        path_vectorizer = 'modules/classification/model/tfidf_vectorizer.pkl'
-        path_classifier = "modules/classification/model/rf_classifier.pkl"
 
-        self.load_tfidf(path_vectorizer)
-        self.load_rf(path_classifier)
+
+        self.load_tfidf()
+        self.load_rf()
 
         X = self.get_matrix(blocks)  
 
@@ -99,12 +105,21 @@ class MlClassifier(BaseClassifier):
 
         
     def train(self, blocks: List[DocumentBlock]):
+        blocks = [
+            block for block in blocks 
+            if block.classified_type is not None 
+            and block.normalized_data is not None
+        ]
+        if(len(blocks) < 1): return
+
         block_text = [extracted_block_text(block) for block in blocks]
         self.create_tfidf()
         self.create_dictionary(block_text)
 
         X_train = self.get_matrix(blocks)
         Y_train = np.array([block.classified_type.value for block in blocks])
+
+        if(len(Y_train) < 1): print("ОШИБКА- В документе нет размеченых данных")
 
         X_train = np.array(X_train)
         Y_train = np.array(Y_train)
@@ -113,10 +128,76 @@ class MlClassifier(BaseClassifier):
         
         self.create_rf()
         self.train_rf(X_train, Y_train)
+
         self.save_rf("modules/classification/model/rf_classifier.pkl")
         self.save_tfidf("modules/classification/model/tfidf_vectorizer.pkl")
 
+        
 
+    def test(self, blocks: List[DocumentBlock]):
+        blocks = [
+            block for block in blocks 
+            if block.classified_type is not None 
+            and block.normalized_data is not None
+        ]
+        if(len(blocks) < 1): return
+
+        self.load_tfidf()
+        self.load_rf()
+
+        X_test = self.get_matrix(blocks)
+        Y_test = np.array([block.classified_type.value for block in blocks])
+
+        if(len(Y_test) < 1): print("ОШИБКА- В документе нет размеченых данных")
+
+        # 1. Предсказания на обучающей выборке
+        train_predictions = self.rf_model.predict(X_test)
+        
+        # 2. Точность на обучающих данных
+        train_accuracy = accuracy_score(Y_test, train_predictions)
+        print(f"\n{'='*60}")
+        print(f"ТОЧНОСТЬ НА ОБУЧАЮЩЕЙ ВЫБОРКЕ: {train_accuracy:.2%}")
+        print(f"{'='*60}")
+        
+        # 3. Отчёт по классам
+        print("\nОТЧЁТ ПО КЛАССАМ:")
+        print(classification_report(
+            Y_test, train_predictions, 
+            labels=self.rf_model.classes_,
+            target_names=self.rf_model.classes_,
+            digits=3,
+            zero_division=0 
+        ))
+
+        print("Классы в Y_test:", set(Y_test))
+        print("Классы в предсказаниях:", set(train_predictions))
+        print("Классы модели:", self.rf_model.classes_)
+        
+        # 4. Матрица ошибок
+        print("МАТРИЦА ОШИБОК (confusion matrix):")
+        cm = confusion_matrix(Y_test, train_predictions)
+        print(cm)
+        
+        # 5. Распределение классов
+        print("\nРАСПРЕДЕЛЕНИЕ КЛАССОВ В ВЫБОРКЕ:")
+        class_counts = Counter(Y_test)
+        for cls, count in sorted(class_counts.items(), key=lambda x: -x[1]):
+            print(f"  {cls:25s}: {count:4d} ({count/len(Y_test)*100:5.1f}%)")
+        
+        # 6. Топ-10 самых неуверенных предсказаний
+        proba = self.rf_model.predict_proba(X_test)
+        max_probs = np.max(proba, axis=1)
+        uncertain_indices = np.argsort(max_probs)[:10]  # 10 самых неуверенных
+        
+        print("\nСАМЫЕ СЛОЖНЫЕ КЛАССЫ:")
+        from collections import defaultdict
+
+        conf_by_class = defaultdict(list)
+        for t, c in zip(Y_test, max_probs):
+            conf_by_class[t].append(c)
+       
+        for cls, confs in sorted(conf_by_class.items(), key=lambda x: np.mean(x[1]))[:10]:
+            print(f"  {cls:<25s} : {np.mean(confs):.3f} ( n={len(confs)})")
 
 # endregion
 # ============================================================
@@ -141,9 +222,9 @@ class MlClassifier(BaseClassifier):
         """Сохранение обученной модели RF"""
         joblib.dump(self.rf_model, filepath)
     
-    def load_rf(self, filepath):
+    def load_rf(self):
         """Загрузка модели RF"""
-        self.rf_model = joblib.load(filepath)
+        self.rf_model = joblib.load(self.path_classifier)
     
     def predict_rf(self, X, return_proba=False):
         """Классификация строк (для передачи в CRF)"""
@@ -187,8 +268,8 @@ class MlClassifier(BaseClassifier):
     def save_tfidf(self, path):
         joblib.dump(self.vectorizer, path)
 
-    def load_tfidf(self, path):
-        self.vectorizer = joblib.load(path)
+    def load_tfidf(self):
+        self.vectorizer = joblib.load(self.path_vectorizer)
 
 # endregion
 # ============================================================
@@ -199,8 +280,7 @@ class MlClassifier(BaseClassifier):
 
 def custom_tokenizer(text):
     text = str(text).lower()
-    # Немного улучшил паттерн, чтобы он ловил 1.1.1. целиком
-    pattern = r"(\d+(?:\.\d+)*[\.)]|[•\-\—\–]|[а-яa-z]{3,})"
+    pattern = r"(\d+(?:\.\d+)*[\.)]?|[•\-\—\–]|[а-яa-z]+|[.,;:!?(){}\[\]\"'])"
     tokens = re.findall(pattern, text)
 
     result = []
@@ -210,7 +290,7 @@ def custom_tokenizer(text):
         if re.search(r"\d+", token):
             normalized = re.sub(r"\d+", "n", token)
             result.append(normalized)
-        elif re.match(r"^[а-яa-z]{3,}$", token):
+        elif re.match(r"^[а-яa-z]{1,}$", token):
             lemma = morph.parse(token)[0].normal_form
             result.append(lemma)
         else:

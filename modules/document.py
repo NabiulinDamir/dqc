@@ -10,15 +10,17 @@ import numpy as np
 # region Классы
 # ============================================================
 
+from enum import Enum
+from typing import Dict, Optional
+
+
 class BlockClassifiedType(Enum):
     UNKNOWN             = "unknown"
     TEXT                = "text"
     HEADING             = "heading"
     NUMBER_LIST_ITEM    = "number_list_item"
     MARKER_LIST_ITEM    = "marker_list_item"
-    # TABLE               = "table"
     TABLE_CAPTION       = "table_caption"
-    # IMAGE               = "image"
     IMAGE_CAPTION       = "image_caption"
     FORMULA             = "formula"
     FOOTER              = "footer"
@@ -29,13 +31,46 @@ class BlockClassifiedType(Enum):
 
     @staticmethod
     def index(enum_value) -> int:
-        """Возвращает индекс элемента Enum (0-based)"""
         if isinstance(enum_value, BlockClassifiedType):
             return list(BlockClassifiedType).index(enum_value)
         elif isinstance(enum_value, str):
             return list(BlockClassifiedType).index(BlockClassifiedType(enum_value))
-        return 0 
+        return 0
 
+    @staticmethod
+    def get_color(enum_value) -> Optional[str]:
+        if isinstance(enum_value, BlockClassifiedType):
+            return _CLASS_TO_COLORS.get(enum_value)
+        if isinstance(enum_value, str):
+            try:
+                return _CLASS_TO_COLORS.get(BlockClassifiedType(enum_value))
+            except ValueError:
+                return None
+        return None
+
+    @staticmethod
+    def get_by_color(color: str) -> Optional["BlockClassifiedType"]:
+        return _COLORS_TO_CLASS.get(color)
+
+_COLORS_TO_CLASS: Dict[str, BlockClassifiedType] = {
+    "#1F3864": BlockClassifiedType.HEADING,
+    "#46FF3F": BlockClassifiedType.FOOTER,
+    "#21D6DF": BlockClassifiedType.FORMULA,
+    "#EE0000": BlockClassifiedType.MARKER_LIST_ITEM,
+    "#FFC000": BlockClassifiedType.NUMBER_LIST_ITEM,
+    "#ED7D31": BlockClassifiedType.IMAGE_CAPTION,
+    "#7030A0": BlockClassifiedType.TABLE_CAPTION,
+    "#000000": BlockClassifiedType.TEXT,
+    "#106616": BlockClassifiedType.CONTENT_ITEM,
+    "#DF21BB": BlockClassifiedType.LISTING,
+    "#8D4294": BlockClassifiedType.LISTING_CAPTION,
+    "#0070C0": BlockClassifiedType.LITERATURE_ITEM,
+}
+
+_CLASS_TO_COLORS: Dict[BlockClassifiedType, str] = {
+    cls: color for color, cls in _COLORS_TO_CLASS.items()
+}
+    
 class BlockParsedType(Enum):
     UNKNOWN     = "unknown"
     TEXT        = "text"  # Обычный параграф
