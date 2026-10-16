@@ -1,3 +1,4 @@
+import time
 from typing import Any, Dict, List, Optional
 from .base import BaseClassifier, ClassificationResult
 
@@ -35,7 +36,7 @@ class MlClassifier(BaseClassifier):
         self.rf_model = None
         self.vectorizer = None
         # self.all_vectors = None
-        self.context_length = (1,1)
+        self.context_length = (15,4)
         self.path_vectorizer = 'modules/classification/model/tfidf_vectorizer.pkl'
         self.path_classifier = "modules/classification/model/rf_classifier.pkl"
 
@@ -68,20 +69,14 @@ class MlClassifier(BaseClassifier):
 
         for block_idx, block in enumerate(blocks):
             blocks_vectors = []
-            
             for offset in range(-self.context_length[0], self.context_length[1] + 1):
                 curr_idx = block_idx + offset
-            
                 if 0 <= curr_idx < len(blocks):
-                    # Берем и скаляры, и текст ВСЕХ блоков в окне
                     scalar_vec = blocks[curr_idx].normalized_data.to_vector()
                     text_vec = tfidf_matrix[curr_idx].toarray().flatten()
                     blocks_vectors.append(np.concatenate([scalar_vec, text_vec]))
                 else:
-                    # Если вышли за границы, добавляем нули правильной длины
                     blocks_vectors.append(zero_vector)
-
-            # Склеиваем всё окно в один вектор для текущего блока
             full_vector = np.concatenate(blocks_vectors)
             X.append(full_vector)
         
@@ -151,53 +146,18 @@ class MlClassifier(BaseClassifier):
         if(len(Y_test) < 1): print("ОШИБКА- В документе нет размеченых данных")
 
         # 1. Предсказания на обучающей выборке
-        train_predictions = self.rf_model.predict(X_test)
+        start_time = time.time()
+        train_predictions = self.predict_rf(X_test)
         
         # 2. Точность на обучающих данных
         train_accuracy = accuracy_score(Y_test, train_predictions)
-        print(f"\n{'='*60}")
-        print(f"ТОЧНОСТЬ НА ОБУЧАЮЩЕЙ ВЫБОРКЕ: {train_accuracy:.2%}")
-        print(f"{'='*60}")
-        
-        # 3. Отчёт по классам
-        print("\nОТЧЁТ ПО КЛАССАМ:")
-        print(classification_report(
-            Y_test, train_predictions, 
-            labels=self.rf_model.classes_,
-            target_names=self.rf_model.classes_,
-            digits=3,
-            zero_division=0 
-        ))
-
-        print("Классы в Y_test:", set(Y_test))
-        print("Классы в предсказаниях:", set(train_predictions))
-        print("Классы модели:", self.rf_model.classes_)
-        
-        # 4. Матрица ошибок
-        print("МАТРИЦА ОШИБОК (confusion matrix):")
-        cm = confusion_matrix(Y_test, train_predictions)
-        print(cm)
-        
-        # 5. Распределение классов
-        print("\nРАСПРЕДЕЛЕНИЕ КЛАССОВ В ВЫБОРКЕ:")
-        class_counts = Counter(Y_test)
-        for cls, count in sorted(class_counts.items(), key=lambda x: -x[1]):
-            print(f"  {cls:25s}: {count:4d} ({count/len(Y_test)*100:5.1f}%)")
-        
-        # 6. Топ-10 самых неуверенных предсказаний
-        proba = self.rf_model.predict_proba(X_test)
-        max_probs = np.max(proba, axis=1)
-        uncertain_indices = np.argsort(max_probs)[:10]  # 10 самых неуверенных
-        
-        print("\nСАМЫЕ СЛОЖНЫЕ КЛАССЫ:")
-        from collections import defaultdict
-
-        conf_by_class = defaultdict(list)
-        for t, c in zip(Y_test, max_probs):
-            conf_by_class[t].append(c)
-       
-        for cls, confs in sorted(conf_by_class.items(), key=lambda x: np.mean(x[1]))[:10]:
-            print(f"  {cls:<25s} : {np.mean(confs):.3f} ( n={len(confs)})")
+        print(f"\n{'='*30}")
+        print(f"ТОЧНОСТЬ: {train_accuracy:.2%}")
+        print(f"{'='*30}")
+        print(f"ВРЕМЯ: {time.time() - start_time:.2f} с")
+        print(f"{'='*30}")
+        print(f"ТЕСТОВАЯ МАТРИЦА: {X_test.shape}")
+        print(f"{'='*30}")
 
 # endregion
 # ============================================================
