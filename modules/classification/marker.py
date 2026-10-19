@@ -17,14 +17,14 @@ class MarkerClassifier:
 
     def classify(self, blocks: List[DocumentBlock]) -> List[DocumentBlock]:
         for index, block in enumerate(blocks):
-            color = block.parsed_data.typography.color if block.parsed_data.typography else "#92384"
-
-            # if index > 0:
-            #     prev_type = blocks[index - 1].classified_type
-            #     block.normalized_data.prev_block_classified_type = BlockClassifiedType.index(prev_type)
-            # else:
-            #     block.normalized_data.prev_block_classified_type = BlockClassifiedType.index(BlockClassifiedType.UNKNOWN)
-            
+            color = "#922384"
+            if isinstance(block.parsed_data.data, TextBlockData):
+                if block.parsed_data.data.typography:
+                    color = block.parsed_data.data.typography.color
+            else:
+                # Для таблиц, изображений и других нетекстовых блоков
+                # можно вернуть дефолт или определить цвет по типу блока
+                pass
             block.classified_type = BlockClassifiedType.get_by_color(color.upper())
         
         return blocks

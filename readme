@@ -5,3 +5,5 @@ pip install pymupdf python-docx joblib scikit-learn pymorphy2-dicts-ru pymorphy3
 $env:NLTK_ALLOW_PROXIED_URLOPEN=1; python -c "import nltk; nltk.download('stopwords')"
 
 python main.py
+
+pip install torchcrf

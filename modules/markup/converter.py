@@ -17,8 +17,8 @@ def blocks_to_markup(classified_blocks: List[DocumentBlock]) -> List[Markup]:
 
         if(block is None): continue
 
+        # label = block.normalized_data.relative_space_rigth
         label = block.classified_type
-        
             
         
         

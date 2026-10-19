@@ -1,6 +1,7 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 from pathlib import Path
 import json
 import numpy as np
@@ -78,7 +79,7 @@ class BlockParsedType(Enum):
     IMAGE       = "image"  # Подпись к рисунку/таблице
 
 @dataclass
-class BlockTypography:
+class TextTypography:
     font_name: Optional[str]    = None  # Название шрифта
     font_size: Optional[float]  = None  # Размер шрифта
     color: Optional[str]        = None  # Цвет текста (например, в формате HEX)
@@ -90,6 +91,11 @@ class BlockGeometry:
     right: Optional[float]   = None  # Координата X (например, правый нижний угол)
     bottom: Optional[float]  = None  # Координата Y (например,
 
+    margin_left: Optional[float]     = None
+    margin_top: Optional[float]      = None
+    margin_right: Optional[float]    = None
+    margin_bottom: Optional[float]   = None
+
 @dataclass
 class PageParameters:
     number: Optional[int]       = None  # Номер страницы
@@ -100,6 +106,7 @@ class PageParameters:
 class TextBlockData:
     # Текст
     text: Optional[str]         = None # Текст блока
+    typography: Optional[TextTypography] = None
 
 @dataclass
 class ImageBlockData:  
@@ -110,11 +117,33 @@ class ImageBlockData:
     ext: Optional[str] = None
 
 @dataclass
-class ParsedBlockData: 
-    data: Optional[TextBlockData | ImageBlockData]  = None  # Данные блока
-    typography: Optional[BlockTypography]           = None # Типографические параметры
-    geometry: Optional[BlockGeometry]               = None # Геометрические параметры
-    page_parameters: Optional[PageParameters]       = None # Данные страницы
+class TableCell:
+    row: Tuple[int, int] = (0, 0)         # Используй кортеж вместо списка
+    col: Tuple[int, int] = (0, 0)          
+    geometry: Optional[BlockGeometry]  = None 
+    text_blocks: List[DocumentBlock] = None
+
+@dataclass
+class TableBlockData:
+    cells: List[TableCell]
+
+    @property
+    def rows(self) -> int:
+        if not self.cells:
+            return 0
+        return max(cell.row_end for cell in self.cells) + 1
+
+    @property
+    def cols(self) -> int:
+        if not self.cells:
+            return 0
+        return max(cell.col_end for cell in self.cells) + 1
+
+@dataclass
+class ParsedBlockData:
+    data: Optional[TextBlockData | ImageBlockData | TableBlockData]  = None  # Данные блока
+    geometry: Optional[BlockGeometry]                  = None # Геометрические параметры
+    page_parameters: Optional[PageParameters]          = None # Данные страницы
 
 @dataclass
 class NormalizeTextBlockData:
@@ -128,8 +157,11 @@ class NormalizeTextBlockData:
     relative_font_size: Optional[float]                = None  # !Размер шрифта относительно других блоков
     relative_margin_top: Optional[float]               = None  # Относительный отступ снизу до сл. строки
     relative_margin_bottom: Optional[float]            = None  # Относительный отступ сверху до пр. строки
+    relative_margin_left: Optional[float]              = None  # Относительный отступ слева до пр блока или до каря страницы
+    
     # Геометрические       
     relative_space_left: Optional[float]               = None  # !Относительный отступ слева 0.5 - середина страницы
+    relative_space_rigth: Optional[float]              = None  # Относительный отступ слева 0.5 - середина страницы
     relative_space_top: Optional[float]                = None  # !Позиция относительно страницы 0.5 - середина
     relative_height: Optional[float]                   = None  # !Высота относительно страницы ---
     position_in_line: Optional[int]                    = None  # !Позиция в строке
@@ -139,7 +171,7 @@ class NormalizeTextBlockData:
     prev_block_classified_type: Optional[int]          = None  # !Классифицированный тип предыдущего блока (2 - заголовок)
     prev_block_parsed_type: Optional[int]              = None  # !Реальный тип предыдущего блока (2 - картинка)
     next_block_parsed_type: Optional[int]              = None  # !Реальный тип следующего блока (2 - картинка)
-    # prev_block_text_vector: Optional[np.ndarray]       = None  # Вектор текста предыдущего блока
+    
 
     def to_vector(self) -> np.ndarray:
         from dataclasses import fields

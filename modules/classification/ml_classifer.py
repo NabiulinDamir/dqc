@@ -53,6 +53,7 @@ class MlClassifier(BaseClassifier):
         predictions = self.predict_rf(X)
 
         for block, predicted_class in zip(blocks, predictions):
+            if block.parsed_type != BlockParsedType.TEXT: continue
             block.classified_type = predicted_class
 
 
@@ -102,7 +103,8 @@ class MlClassifier(BaseClassifier):
     def train(self, blocks: List[DocumentBlock]):
         blocks = [
             block for block in blocks 
-            if block.classified_type is not None 
+            if block.classified_type is not None
+            and block.parsed_type == BlockParsedType.TEXT 
             and block.normalized_data is not None
         ]
         if(len(blocks) < 1): return

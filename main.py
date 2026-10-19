@@ -82,6 +82,11 @@ def main():
         action='store_true',
         help='Запустить только парсинг'
     )
+    parser.add_argument(
+        '--mark',
+        action='store_true',
+        help='Запустить только маркировку'
+    )
 
 
     args = parser.parse_args()
@@ -93,6 +98,8 @@ def main():
     if args.test:
         test_ml_classifer("data/test")
         return
+
+        
 
     if(not args.classify and not args.parse):
         train_ml_classifer("data/train") 
@@ -135,6 +142,9 @@ def main():
     print(
         "[POINT] Конец обработки ------------------------------------------------------"
     )
+
+
+
 
     
 def save_pdf_to_json(pdf_path, output_path):
