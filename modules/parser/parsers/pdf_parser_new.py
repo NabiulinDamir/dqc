@@ -262,15 +262,15 @@ class PdfParser:
 
                 image_rects = page.get_image_rects(xref)
 
-                output_dir = "extracted_images"
-                os.makedirs(output_dir, exist_ok=True)
-                image_filename = (
-                    f"page_{page_params.number + 1}_img_{img_idx}.{base_image['ext']}"
-                )
-                image_path = os.path.join(output_dir, image_filename)
+                # output_dir = "extracted_images"
+                # os.makedirs(output_dir, exist_ok=True)
+                # image_filename = (
+                #     f"page_{page_params.number + 1}_img_{img_idx}.{base_image['ext']}"
+                # )
+                # image_path = os.path.join(output_dir, image_filename)
 
-                with open(image_path, "wb") as f:
-                    f.write(base_image["image"])
+                # with open(image_path, "wb") as f:
+                #     f.write(base_image["image"])
 
                 block = DocumentBlock(
                     parsed_type=BlockParsedType.IMAGE,
@@ -279,7 +279,7 @@ class PdfParser:
                             width=base_image["width"],
                             height=base_image["height"],
                             ext=base_image["ext"],
-                            saved_path=image_path,
+                            saved_path="image_path",
                         ),
                         geometry=BlockGeometry(
                             left=int(image_rects[0].x0),

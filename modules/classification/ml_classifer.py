@@ -12,8 +12,11 @@ import numpy as np
 import pymorphy3
 import joblib
 import re
-
-
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import os
+import json
 
 
 from ..document import (
@@ -38,162 +41,330 @@ class MlClassifier(BaseClassifier):
         # self.all_vectors = None
         self.context_length = (15,4)
         self.path_vectorizer = 'modules/classification/model/tfidf_vectorizer.pkl'
-        self.path_classifier = "modules/classification/model/rf_classifier.pkl"
+        self.path_classifier = "modules/classification/model/bilstm_classifier.pth"
 
+# ============================================================
 # region Классификация
+# ============================================================
 
     def classify(self, blocks: List[DocumentBlock]) -> List[DocumentBlock]:
 
 
         self.load_tfidf()
-        self.load_rf()
+        self.load_bilstm()
 
         X = self.get_matrix(blocks)  
+    
+        predictions = self.predict_bilstm(X)
 
-        predictions = self.predict_rf(X)
-
-        for block, predicted_class in zip(blocks, predictions):
-            if block.parsed_type != BlockParsedType.TEXT: continue
-            block.classified_type = predicted_class
-
+        for block, predicted_idx in zip(blocks, predictions):
+            block.classified_type = list(BlockClassifiedType)[predicted_idx]
 
         return blocks
+
 
     def get_matrix(self, blocks: List[DocumentBlock]):
         X = []
         block_text = [extracted_block_text(block) for block in blocks]
-        tfidf_matrix = self.vectorizer.transform(block_text)
         
-        scalar_len = len(blocks[0].normalized_data.to_vector())
-        text_len = tfidf_matrix.shape[1]
-        zero_vector = np.zeros(scalar_len + text_len)
-
+        # Сразу получаем плотную матрицу, toarray() ускорит работу
+        tfidf_matrix = self.vectorizer.transform(block_text).toarray() 
+        
         for block_idx, block in enumerate(blocks):
-            blocks_vectors = []
-            for offset in range(-self.context_length[0], self.context_length[1] + 1):
-                curr_idx = block_idx + offset
-                if 0 <= curr_idx < len(blocks):
-                    scalar_vec = blocks[curr_idx].normalized_data.to_vector()
-                    text_vec = tfidf_matrix[curr_idx].toarray().flatten()
-                    blocks_vectors.append(np.concatenate([scalar_vec, text_vec]))
-                else:
-                    blocks_vectors.append(zero_vector)
-            full_vector = np.concatenate(blocks_vectors)
+            # Вектор нормализованных признаков (шрифты, размеры, отступы)
+            scalar_vec = block.normalized_data.to_vector()
+            # Текстовый вектор (только для ЭТОГО блока)
+            text_vec = tfidf_matrix[block_idx]
+            
+            # Склеиваем только признаки самого блока, без соседей!
+            full_vector = np.concatenate([scalar_vec, text_vec])
             X.append(full_vector)
         
-        return np.array(X)
-            
-
-    # def classify_one_block(
-    #     self,
-    #     current_block: DocumentBlock,
-    #     index,
-    # ):
-
-    #     text_vector = self.all_vectors[index].toarray().flatten().tolist()
-    #     block_patterns = current_block.normalized_data.to_vector()
-    
-    #     vector = np.concatenate([block_patterns, text_vector]) 
-
-    #     ml_predict = self.predict_rf(vector.reshape(1, -1))
+        # 1. Превращаем 2D numpy-массив в тензор PyTorch
+        tensor_2d = torch.tensor(np.array(X), dtype=torch.float32)
         
-    #     current_block.classified_type = ml_predict[0]
+        # 2. Добавляем размерность батча (unsqueeze) и отдаем 3D-матрицу (1, seq_len, features)
+        return tensor_2d.unsqueeze(0)
 
+# ============================================================
+# region Обучение
+# ============================================================            
         
-    def train(self, blocks: List[DocumentBlock]):
-        blocks = [
-            block for block in blocks 
-            if block.classified_type is not None
-            and block.parsed_type == BlockParsedType.TEXT 
-            and block.normalized_data is not None
-        ]
-        if(len(blocks) < 1): return
+    def train(self, docs_blocks: List[List[DocumentBlock]]):
+        all_train_texts = []
+        for doc in docs_blocks:
+            for block in doc:
+                if (block.classified_type is not None and 
+                    block.parsed_type == BlockParsedType.TEXT and 
+                    block.normalized_data is not None):
+                    all_train_texts.append(extracted_block_text(block))
+        
+        if len(all_train_texts) < 1: 
+            print("ОШИБКА: Нет размеченных данных для обучения")
+            return
 
-        block_text = [extracted_block_text(block) for block in blocks]
         self.create_tfidf()
-        self.create_dictionary(block_text)
+        self.create_dictionary(all_train_texts)
 
-        X_train = self.get_matrix(blocks)
-        Y_train = np.array([block.classified_type.value for block in blocks])
-
-        if(len(Y_train) < 1): print("ОШИБКА- В документе нет размеченых данных")
-
-        X_train = np.array(X_train)
-        Y_train = np.array(Y_train)
+        num_scalar_features = len(docs_blocks[0][0].normalized_data.to_vector())
         
-        print(f"Матрица: {X_train.shape}")
-        
-        self.create_rf()
-        self.train_rf(X_train, Y_train)
+        # Ищем первый валидный документ со строгой фильтрацией
+        sample_doc = []
+        for doc in docs_blocks:
+            sample_doc = [
+                b for b in doc 
+                if b.classified_type is not None 
+                and b.parsed_type == BlockParsedType.TEXT
+                and b.normalized_data is not None
+            ]
+            if sample_doc:
+                break
+                
+        if not sample_doc:
+            print("ОШИБКА: Во всех документах нет размеченных данных для определения размерности")
+            return
 
-        self.save_rf("modules/classification/model/rf_classifier.pkl")
-        self.save_tfidf("modules/classification/model/tfidf_vectorizer.pkl")
+        sample_matrix = self.get_matrix(sample_doc)
+        input_dim = sample_matrix.shape[-1]
+        vocab_size = len(self.vectorizer.get_feature_names_out())
+        num_classes = len(BlockClassifiedType)
 
-        
+        print(f"Инициализация BiLSTM (Multi-branch). Скаляров: {num_scalar_features}, Словарь: {vocab_size}, Классов: {num_classes}")
 
-    def test(self, blocks: List[DocumentBlock]):
-        blocks = [
-            block for block in blocks 
-            if block.classified_type is not None 
-            and block.normalized_data is not None
-        ]
-        if(len(blocks) < 1): return
-
-        self.load_tfidf()
-        self.load_rf()
-
-        X_test = self.get_matrix(blocks)
-        Y_test = np.array([block.classified_type.value for block in blocks])
-
-        if(len(Y_test) < 1): print("ОШИБКА- В документе нет размеченых данных")
-
-        # 1. Предсказания на обучающей выборке
-        start_time = time.time()
-        train_predictions = self.predict_rf(X_test)
-        
-        # 2. Точность на обучающих данных
-        train_accuracy = accuracy_score(Y_test, train_predictions)
-        print(f"\n{'='*30}")
-        print(f"ТОЧНОСТЬ: {train_accuracy:.2%}")
-        print(f"{'='*30}")
-        print(f"ВРЕМЯ: {time.time() - start_time:.2f} с")
-        print(f"{'='*30}")
-        print(f"ТЕСТОВАЯ МАТРИЦА: {X_test.shape}")
-        print(f"{'='*30}")
-
-# endregion
-# ============================================================
-# region Random Forest
-# ============================================================
-
-
-    def create_rf(self):
-        self.rf_model = RandomForestClassifier(
-            n_estimators=100,
-            max_depth=None,
-            min_samples_split=2,
-            random_state=42,
-            n_jobs=-1
+        self.create_bilstm(
+            num_scalar_features=num_scalar_features,
+            vocab_size=vocab_size,
+            num_classes=num_classes
         )
-    
-    def train_rf(self, X_train, y_train):
-        """Обучение Random Forest на нормализованных признаках строк"""
-        self.rf_model.fit(X_train, y_train)
-        
-    def save_rf(self, filepath):
-        """Сохранение обученной модели RF"""
-        joblib.dump(self.rf_model, filepath)
-    
-    def load_rf(self):
-        """Загрузка модели RF"""
-        self.rf_model = joblib.load(self.path_classifier)
-    
-    def predict_rf(self, X, return_proba=False):
-        """Классификация строк (для передачи в CRF)"""
-        if return_proba:
-            return self.rf_model.predict_proba(X)
-        return self.rf_model.predict(X)
+        self.train_bilstm(docs_blocks, epochs=25, lr=0.001)
 
+        self.prune_vocabulary_by_weights(num_scalar_features)
+
+        self.save_bilstm()
+        self.save_tfidf()
+
+# ============================================================
+# region Тест
+# ============================================================
+
+    def test(self, docs_blocks: List[List[DocumentBlock]]):
+        """Тестирование модели на массиве документов"""
+        # 1. Загружаем словарь TF-IDF
+        self.load_tfidf()
+
+        # Получаем размерности на основе первого валидного документа
+        sample_doc = [b for b in docs_blocks[0] if b.classified_type is not None]
+        if not sample_doc:
+            print("ОШИБКА: Первый документ не содержит размеченных данных для определения размерности")
+            return
+        
+        # 2. Загружаем веса модели
+        self.load_bilstm()
+
+        all_true_labels = []
+        all_predictions = []
+        
+        start_time = time.time()
+
+        # 3. Делаем предсказания для каждого документа по отдельности
+        for doc in docs_blocks:
+            valid_blocks = [
+                b for b in doc 
+                if b.classified_type is not None 
+                and b.parsed_type == BlockParsedType.TEXT
+                and b.normalized_data is not None
+            ]
+            if not valid_blocks:
+                continue
+
+            X_doc = self.get_matrix(valid_blocks)
+            Y_doc = [BlockClassifiedType.index(block.classified_type) for block in valid_blocks]
+
+            # Предсказание для одной последовательности (одного документа)
+            doc_predictions = self.predict_bilstm(X_doc)
+
+            all_true_labels.extend(Y_doc)
+            all_predictions.extend(doc_predictions)
+
+        if not all_true_labels:
+            print("ОШИБКА: Нет размеченных данных для тестирования во всех документах")
+            return
+
+        # 4. Оценка точности по всем документам
+        test_accuracy = accuracy_score(all_true_labels, all_predictions)
+        
+        print(f"\n{'='*30}")
+        print(f"ДОКУМЕНТОВ В ТЕСТЕ: {len(docs_blocks)}")
+        print(f"{'='*30}")
+        print(f"ОБЩЕЕ КОЛИЧЕСТВО БЛОКОВ: {sum(len(doc) for doc in docs_blocks)}")
+        print(f"{'='*30}")
+        print(f"ОБЩАЯ ТОЧНОСТЬ: {test_accuracy:.2%}")
+        print(f"{'='*30}")
+        print(f"ВРЕМЯ ПРЕДСКАЗАНИЯ: {time.time() - start_time:.2f} с")
+        print(f"{'='*30}")
+
+
+# ============================================================
+# region BiLSTM
+# ============================================================
+
+    def create_bilstm(self, num_scalar_features: int, vocab_size: int, num_classes: int, hidden_dim: int = 64):
+        """Создание архитектуры BiLSTM"""
+        # Автоматический выбор видеокарты, если она есть (CUDA/MPS), иначе процессор
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        self.bilstm_model = DocumentSequenceClassifier(
+            num_scalar_features=num_scalar_features,
+            vocab_size=vocab_size,
+            hidden_dim=hidden_dim, 
+            num_classes=num_classes
+        ).to(self.device)
+
+    
+    def train_bilstm(self, docs_blocks: List[List[DocumentBlock]], epochs=20, lr=0.001):
+        self.bilstm_model.train()
+        optimizer = torch.optim.Adam(self.bilstm_model.parameters(), lr=lr)
+        criterion = torch.nn.CrossEntropyLoss()
+
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            
+            for doc in docs_blocks:
+                # Строгая фильтрация, аналогично classify/test
+                valid_blocks = [
+                    b for b in doc 
+                    if b.classified_type is not None 
+                    and b.parsed_type == BlockParsedType.TEXT
+                    and b.normalized_data is not None
+                ]
+                if not valid_blocks:
+                    continue
+
+                X_tensor = self.get_matrix(valid_blocks).to(self.device)
+                
+                # Исправлено: используем list(BlockClassifiedType).index() вместо .index() у типа
+                Y_doc = [BlockClassifiedType.index(b.classified_type) for b in valid_blocks]
+                Y_tensor = torch.tensor(Y_doc, dtype=torch.long).unsqueeze(0).to(self.device)
+
+                optimizer.zero_grad()
+                outputs = self.bilstm_model(X_tensor) 
+                
+                loss = criterion(outputs.view(-1, len(BlockClassifiedType)), Y_tensor.view(-1))
+                
+                loss.backward()
+                optimizer.step()
+                
+                epoch_loss += loss.item()
+                
+            # if (epoch + 1) % 5 == 0 or epoch == 0:
+            print(f"BiLSTM Эпоха [{epoch+1}/{epochs}] | Loss: {epoch_loss / len(docs_blocks):.4f}")
+
+    def predict_bilstm(self, X, return_proba=False):
+        self.bilstm_model.eval()
+        with torch.no_grad():
+            # Просто переносим готовый 3D-тензор на устройство
+            X_tensor = X.clone().detach().to(self.device) 
+            
+            # Получаем предсказания и убираем измерение батча для возврата плоского списка
+            logits = self.bilstm_model(X_tensor).squeeze(0)
+            if return_proba:
+                probabilities = torch.softmax(logits, dim=1)
+                return probabilities.cpu().numpy()
+            
+            # Выбираем класс с максимальной вероятностью для каждого блока
+            predictions = torch.argmax(logits, dim=1)
+            return predictions.cpu().numpy()
+
+        
+
+
+    def save_bilstm(self):
+        os.makedirs(os.path.dirname(self.path_classifier), exist_ok=True)
+        torch.save(self.bilstm_model.state_dict(), self.path_classifier)
+        
+        config = {
+            "num_scalar_features": self.bilstm_model.scalar_compressor[0].in_features,
+            "vocab_size": self.bilstm_model.text_compressor[0].in_features,
+            "hidden_dim": self.bilstm_model.lstm.hidden_size,
+            "num_classes": self.bilstm_model.fc.out_features
+        }
+        config_path = self.path_classifier.replace('.pth', '_config.json')
+        with open(config_path, 'w', encoding='utf-8') as f:
+            json.dump(config, f)
+
+
+    def load_bilstm(self):
+        config_path = self.path_classifier.replace('.pth', '_config.json')
+        if not os.path.exists(config_path):
+            raise FileNotFoundError("Не найден файл конфигурации для загрузки модели!")
+            
+        # 1. Читаем настройки из файла
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+            
+        # 2. Создаем пустой скелет по прочитанным настройкам
+        self.create_bilstm(
+            num_scalar_features=config.get('num_scalar_features', 18),
+            vocab_size=config.get('vocab_size', len(self.vectorizer.get_feature_names_out()) if self.vectorizer else 0),
+            num_classes=config['num_classes'],
+            hidden_dim=config['hidden_dim']
+        )
+        
+        # 3. Натягиваем сохраненные веса на этот скелет
+        state_dict = torch.load(self.path_classifier, map_location=self.device)
+        self.bilstm_model.load_state_dict(state_dict)
+        self.bilstm_model.eval()
+
+
+    def prune_vocabulary_by_weights(self, num_scalar_features):
+        if not hasattr(self, 'bilstm_model') or self.vectorizer is None:
+            print("[ERROR] Модель или векторизатор не загружены!")
+            return
+
+        # 1. Берем веса текстового компрессора: форма [256, vocab_size]
+        text_weight_matrix = self.bilstm_model.text_compressor[0].weight.data
+        text_importance = torch.sum(torch.abs(text_weight_matrix), dim=0)
+        
+        old_feature_names = self.vectorizer.get_feature_names_out()
+        vocab_size = len(old_feature_names)
+        
+        # 2. Жестко оставляем ровно 50 самых весомых токенов (или меньше, если в словаре изначально меньше 50)
+        k_to_keep = min(50, vocab_size)
+        
+        # Находим индексы топ-50 самых важных слов
+        top_indices = torch.topk(text_importance, k_to_keep).indices.cpu().numpy()
+        active_text_indices = np.sort(top_indices)
+        
+        # 3. Формируем новый словарь для sklearn
+        new_vocabulary = {}
+        for new_idx, old_idx in enumerate(active_text_indices):
+            word = old_feature_names[old_idx]
+            new_vocabulary[word] = new_idx
+            
+        print(f"[INFO] Жесткое сжатие словаря до топ-50: {vocab_size} -> {len(new_vocabulary)} токенов")
+
+        # 4. Создаем новый TfidfVectorizer с урезанным словарем из 50 элементов
+        old_params = self.vectorizer.get_params()
+        new_vectorizer = TfidfVectorizer(
+            vocabulary=new_vocabulary,
+            tokenizer=old_params.get('tokenizer'),
+            ngram_range=old_params.get('ngram_range', (1, 2)),
+            sublinear_tf=old_params.get('sublinear_tf', True),
+            norm=old_params.get('norm', 'l2')
+        )
+        
+        self.vectorizer = new_vectorizer
+        self.vectorizer.fit([" инициализация"]) 
+
+        # 5. Пересобираем текстовый линейный слой под входной размер ровно в 50 элементов
+        old_linear = self.bilstm_model.text_compressor[0]
+        new_vocab_size = len(active_text_indices)
+        
+        new_linear = nn.Linear(new_vocab_size, old_linear.out_features).to(self.device)
+        new_linear.weight.data = old_linear.weight.data[:, active_text_indices].clone()
+        new_linear.bias.data = old_linear.bias.data.clone()
+        
+        self.bilstm_model.text_compressor[0] = new_linear
 
 # endregion
 # ============================================================
@@ -203,13 +374,12 @@ class MlClassifier(BaseClassifier):
 
     def create_tfidf(self):
         """Создание и сохранение словаря TF-IDF"""
-        
         self.vectorizer = TfidfVectorizer(
             tokenizer=custom_tokenizer,
-            token_pattern=None,
+            # token_pattern=None,  <-- Просто удали эту строку
             ngram_range=(1, 2),
-            max_features=5000,
-            min_df=3,
+            max_features=None,
+            min_df=1,
             max_df=0.85,
             sublinear_tf=True,
             norm="l2",
@@ -227,8 +397,8 @@ class MlClassifier(BaseClassifier):
         self.vectorizer.fit_transform(train_blocks_text)
         print(f"Словарь создан: {len(self.vectorizer.vocabulary_)} токенов")
 
-    def save_tfidf(self, path):
-        joblib.dump(self.vectorizer, path)
+    def save_tfidf(self):
+        joblib.dump(self.vectorizer, self.path_vectorizer)
 
     def load_tfidf(self):
         self.vectorizer = joblib.load(self.path_vectorizer)
@@ -269,3 +439,57 @@ def extracted_block_text(block: DocumentBlock) -> str:
     else:
         text = "emptyText"
     return text
+
+
+class DocumentSequenceClassifier(nn.Module):
+    def __init__(self, num_scalar_features: int, vocab_size: int, hidden_dim: int, num_classes: int):
+        super(DocumentSequenceClassifier, self).__init__()
+        
+        # 1. Выделенная ветка для геометрических/шрифтовых признаков (18 штук)
+        scalar_out_dim = 32
+        self.scalar_compressor = nn.Sequential(
+            nn.Linear(num_scalar_features, scalar_out_dim),
+            nn.ReLU()
+        )
+        
+        # 2. Выделенная ветка для текстовых признаков (TF-IDF словарь)
+        text_out_dim = 224
+        self.text_compressor = nn.Sequential(
+            nn.Linear(vocab_size, text_out_dim),
+            nn.ReLU(),
+            nn.Dropout(p=0.4)
+        )
+        
+        # Суммарная размерность после объединения: 32 + 224 = 256
+        compressed_dim = scalar_out_dim + text_out_dim
+        
+        # 3. Двунаправленная LSTM принимает сжатые признаки
+        self.lstm = nn.LSTM(
+            input_size=compressed_dim,
+            hidden_size=hidden_dim,
+            batch_first=True,
+            bidirectional=True
+        )
+        
+        # 4. Классификатор
+        self.fc = nn.Linear(hidden_dim * 2, num_classes)
+
+    def forward(self, x):
+        # x приходит в виде единого тензора: [Batch, Seq_Len, num_scalars + vocab_size]
+        num_scalars = self.scalar_compressor[0].in_features
+        
+        # Разделяем входной поток на геометрию и текст
+        scalar_part = x[:, :, :num_scalars]
+        text_part = x[:, :, num_scalars:]
+        
+        # Прогоняем параллельно через независимые слои
+        scalar_dense = self.scalar_compressor(scalar_part)
+        text_dense = self.text_compressor(text_part)
+        
+        # Объединяем в единый вектор
+        dense_features = torch.cat([scalar_dense, text_dense], dim=-1)
+        
+        # Дальше стандартно через LSTM и полносвязный слой
+        lstm_out, _ = self.lstm(dense_features)
+        out = self.fc(lstm_out)
+        return out

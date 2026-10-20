@@ -1,9 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Tuple
 from pathlib import Path
-import json
 import numpy as np
 
 
@@ -13,7 +12,6 @@ import numpy as np
 
 from enum import Enum
 from typing import Dict, Optional
-
 
 class BlockClassifiedType(Enum):
     UNKNOWN             = "unknown"
@@ -79,13 +77,13 @@ class BlockParsedType(Enum):
     IMAGE       = "image"  # Подпись к рисунку/таблице
 
 @dataclass
-class TextTypography:
+class TextTypography():
     font_name: Optional[str]    = None  # Название шрифта
     font_size: Optional[float]  = None  # Размер шрифта
     color: Optional[str]        = None  # Цвет текста (например, в формате HEX)
 
 @dataclass
-class BlockGeometry:
+class BlockGeometry():
     left: Optional[float]    = None  # Координата X (например, левый верхний угол)
     top: Optional[float]     = None  # Координата Y (например, левый верхний угол)
     right: Optional[float]   = None  # Координата X (например, правый нижний угол)
@@ -97,19 +95,19 @@ class BlockGeometry:
     margin_bottom: Optional[float]   = None
 
 @dataclass
-class PageParameters:
+class PageParameters():
     number: Optional[int]       = None  # Номер страницы
     width: Optional[float]   = None  # Ширина страницы
     height: Optional[float]  = None  # Высота страницы
 
 @dataclass
-class TextBlockData:
+class TextBlockData():
     # Текст
     text: Optional[str]         = None # Текст блока
     typography: Optional[TextTypography] = None
 
 @dataclass
-class ImageBlockData:  
+class ImageBlockData():  
     # Картинки
     saved_path: Optional[str]   = None  # Путь к сохраненной картинке
     width: Optional[float]   = None  # Ширина картинки
@@ -117,14 +115,14 @@ class ImageBlockData:
     ext: Optional[str] = None
 
 @dataclass
-class TableCell:
+class TableCell():
     row: Tuple[int, int] = (0, 0)         # Используй кортеж вместо списка
     col: Tuple[int, int] = (0, 0)          
     geometry: Optional[BlockGeometry]  = None 
     text_blocks: List[DocumentBlock] = None
 
 @dataclass
-class TableBlockData:
+class TableBlockData():
     cells: List[TableCell]
 
     @property
@@ -140,13 +138,13 @@ class TableBlockData:
         return max(cell.col_end for cell in self.cells) + 1
 
 @dataclass
-class ParsedBlockData:
+class ParsedBlockData():
     data: Optional[TextBlockData | ImageBlockData | TableBlockData]  = None  # Данные блока
     geometry: Optional[BlockGeometry]                  = None # Геометрические параметры
     page_parameters: Optional[PageParameters]          = None # Данные страницы
 
 @dataclass
-class NormalizeTextBlockData:
+class NormalizeTextBlockData():
     # Тектовые
     # text_vector: Optional[np.ndarray]                  = None  # Текстовый вектор
     has_capital_start: Optional[int]                   = None  # !Начинается ли с заглавной буквы
@@ -188,7 +186,7 @@ class NormalizeTextBlockData:
         return np.concatenate([scalars] + vectors) if vectors else np.array(scalars)
 
 @dataclass
-class DocumentBlock:
+class DocumentBlock():
     id: Optional[int]                                       = None
     # error: Optional[BlockError] = None
     classified_type: Optional[BlockClassifiedType]          = None # Классифицированный тип блока
@@ -196,15 +194,15 @@ class DocumentBlock:
     parsed_data: Optional[ParsedBlockData]                  = None # Данные для проверки на соответствие правилам
     normalized_data: Optional[NormalizeTextBlockData]       = None # Данные для классификации текста
 
-class Document:
+class Document():
     name: Optional[str]         = None
-    path: Optional[str]         = None  # Путь к файлу документа (если известен)
+    path: str                           # Путь к файлу документа (Обязателен)
     blocks: List[DocumentBlock] = []    # Список блоков документа
 
-    def __init__(self, path: str | Path):  # Принимаем оба типа
+    def __init__(self, path: str):
         path_obj = Path(path)
         self.name = path_obj.stem
-        self.path = str(path_obj)
+        self.path = path
         self.blocks = []
 
     def parse(self, parser):
@@ -214,22 +212,6 @@ class Document:
         classifier.classify(self.blocks)
 
     def markup(self, marker, output_path: str):
-        # Здесь можно реализовать логику разметки документа на основе self.blocks
-        pass
+        marker.markup(self.blocks, self.path, output_path)
 
 
-import inspect
-
-class CustomEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Enum):
-            return obj.value
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()  
-        elif isinstance(obj, np.generic):
-            return obj.item()   
-        elif inspect.isclass(obj):
-            return {k: v for k, v in obj.__dict__.items() if not k.startswith('__')}
-        elif hasattr(obj, "__dict__"):
-            return obj.__dict__
-        return super().default(obj)

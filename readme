@@ -7,3 +7,5 @@ $env:NLTK_ALLOW_PROXIED_URLOPEN=1; python -c "import nltk; nltk.download('stopwo
 python main.py
 
 pip install torchcrf
+
+pip install pydantic
