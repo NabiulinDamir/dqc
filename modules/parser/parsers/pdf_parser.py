@@ -1,4 +1,4 @@
-import fitz
+# import fitz
 import json
 import os
 

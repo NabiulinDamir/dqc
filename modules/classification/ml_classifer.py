@@ -23,7 +23,8 @@ from ..document import (
     DocumentBlock,
     TextBlockData,
     BlockParsedType,
-    BlockClassifiedType
+    BlockClassifiedType,
+    NormalizeTextBlockData
 )
 
 # Инициализация инструментов
@@ -38,6 +39,7 @@ class MlClassifier(BaseClassifier):
         super().__init__(name="ml")
         self.rf_model = None
         self.vectorizer = None
+        self.scalar_vector_length = None
         # self.all_vectors = None
         self.context_length = (15,4)
         self.path_vectorizer = 'modules/classification/model/tfidf_vectorizer.pkl'
@@ -65,6 +67,7 @@ class MlClassifier(BaseClassifier):
 
     def get_matrix(self, blocks: List[DocumentBlock]):
         X = []
+
         block_text = [extracted_block_text(block) for block in blocks]
         
         # Сразу получаем плотную матрицу, toarray() ускорит работу
@@ -73,8 +76,13 @@ class MlClassifier(BaseClassifier):
         for block_idx, block in enumerate(blocks):
             # Вектор нормализованных признаков (шрифты, размеры, отступы)
             scalar_vec = block.normalized_data.to_vector()
+
+            if self.scalar_vector_length is None:
+                self.scalar_vector_length = len(scalar_vec)
+
             # Текстовый вектор (только для ЭТОГО блока)
             text_vec = tfidf_matrix[block_idx]
+
             
             # Склеиваем только признаки самого блока, без соседей!
             full_vector = np.concatenate([scalar_vec, text_vec])
@@ -136,9 +144,8 @@ class MlClassifier(BaseClassifier):
             vocab_size=vocab_size,
             num_classes=num_classes
         )
-        self.train_bilstm(docs_blocks, epochs=25, lr=0.001)
+        self.train_bilstm(docs_blocks, epochs=55, lr=0.001)
 
-        self.prune_vocabulary_by_weights(num_scalar_features)
 
         self.save_bilstm()
         self.save_tfidf()
@@ -256,8 +263,10 @@ class MlClassifier(BaseClassifier):
                 
                 epoch_loss += loss.item()
                 
-            # if (epoch + 1) % 5 == 0 or epoch == 0:
-            print(f"BiLSTM Эпоха [{epoch+1}/{epochs}] | Loss: {epoch_loss / len(docs_blocks):.4f}")
+            if (epoch + 1) % 5 == 0 or epoch == 0:
+                print(f"BiLSTM Эпоха [{epoch+1}/{epochs}] | Loss: {epoch_loss / len(docs_blocks):.4f}")
+
+
 
     def predict_bilstm(self, X, return_proba=False):
         self.bilstm_model.eval()
@@ -304,7 +313,7 @@ class MlClassifier(BaseClassifier):
             
         # 2. Создаем пустой скелет по прочитанным настройкам
         self.create_bilstm(
-            num_scalar_features=config.get('num_scalar_features', 18),
+            num_scalar_features=config.get('num_scalar_features', self.scalar_vector_length),
             vocab_size=config.get('vocab_size', len(self.vectorizer.get_feature_names_out()) if self.vectorizer else 0),
             num_classes=config['num_classes'],
             hidden_dim=config['hidden_dim']
@@ -316,55 +325,6 @@ class MlClassifier(BaseClassifier):
         self.bilstm_model.eval()
 
 
-    def prune_vocabulary_by_weights(self, num_scalar_features):
-        if not hasattr(self, 'bilstm_model') or self.vectorizer is None:
-            print("[ERROR] Модель или векторизатор не загружены!")
-            return
-
-        # 1. Берем веса текстового компрессора: форма [256, vocab_size]
-        text_weight_matrix = self.bilstm_model.text_compressor[0].weight.data
-        text_importance = torch.sum(torch.abs(text_weight_matrix), dim=0)
-        
-        old_feature_names = self.vectorizer.get_feature_names_out()
-        vocab_size = len(old_feature_names)
-        
-        # 2. Жестко оставляем ровно 50 самых весомых токенов (или меньше, если в словаре изначально меньше 50)
-        k_to_keep = min(50, vocab_size)
-        
-        # Находим индексы топ-50 самых важных слов
-        top_indices = torch.topk(text_importance, k_to_keep).indices.cpu().numpy()
-        active_text_indices = np.sort(top_indices)
-        
-        # 3. Формируем новый словарь для sklearn
-        new_vocabulary = {}
-        for new_idx, old_idx in enumerate(active_text_indices):
-            word = old_feature_names[old_idx]
-            new_vocabulary[word] = new_idx
-            
-        print(f"[INFO] Жесткое сжатие словаря до топ-50: {vocab_size} -> {len(new_vocabulary)} токенов")
-
-        # 4. Создаем новый TfidfVectorizer с урезанным словарем из 50 элементов
-        old_params = self.vectorizer.get_params()
-        new_vectorizer = TfidfVectorizer(
-            vocabulary=new_vocabulary,
-            tokenizer=old_params.get('tokenizer'),
-            ngram_range=old_params.get('ngram_range', (1, 2)),
-            sublinear_tf=old_params.get('sublinear_tf', True),
-            norm=old_params.get('norm', 'l2')
-        )
-        
-        self.vectorizer = new_vectorizer
-        self.vectorizer.fit([" инициализация"]) 
-
-        # 5. Пересобираем текстовый линейный слой под входной размер ровно в 50 элементов
-        old_linear = self.bilstm_model.text_compressor[0]
-        new_vocab_size = len(active_text_indices)
-        
-        new_linear = nn.Linear(new_vocab_size, old_linear.out_features).to(self.device)
-        new_linear.weight.data = old_linear.weight.data[:, active_text_indices].clone()
-        new_linear.bias.data = old_linear.bias.data.clone()
-        
-        self.bilstm_model.text_compressor[0] = new_linear
 
 # endregion
 # ============================================================
@@ -376,9 +336,9 @@ class MlClassifier(BaseClassifier):
         """Создание и сохранение словаря TF-IDF"""
         self.vectorizer = TfidfVectorizer(
             tokenizer=custom_tokenizer,
-            # token_pattern=None,  <-- Просто удали эту строку
+            token_pattern=None,
             ngram_range=(1, 2),
-            max_features=None,
+            max_features=5000,
             min_df=1,
             max_df=0.85,
             sublinear_tf=True,
@@ -391,7 +351,6 @@ class MlClassifier(BaseClassifier):
         # print(f"Матрица: {tfidf_matrix.shape}")
 
         # return vectorizer
-
 
     def create_dictionary(self, train_blocks_text):
         self.vectorizer.fit_transform(train_blocks_text)

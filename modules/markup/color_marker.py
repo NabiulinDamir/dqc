@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
-import fitz # type: ignore
+import pymupdf
 from..document import (
     BlockClassifiedType,
     DocumentBlock,
@@ -10,7 +10,7 @@ from..document import (
 @dataclass
 class ColorMarker:
     def markup(self, blocks: List[DocumentBlock], file_path: str, output_path: str):
-        doc = fitz.open(file_path)
+        doc = pymupdf.open(file_path)
 
         for block in blocks:
 
@@ -19,7 +19,7 @@ class ColorMarker:
             label = block.classified_type.name if block.classified_type else "none"
                 
             
-            rect = fitz.Rect(
+            rect = pymupdf.Rect(
                 geometry.left,
                 geometry.top,
                 geometry.right,

@@ -235,7 +235,7 @@ class PdfParser:
                             has_capital_start=(t_text[0].isalpha() and t_text[0].isupper()) and 1 or 0,
                             proportion_capital_letters=round(sum(c.isupper() for c in t_text) / max(1, sum(c.isalpha() for c in t_text)), 2),
                             relative_space_left = round(p_left / page_params.width, 2),
-                            # relative_space_rigth= round(p_right / page_params.width, 2),
+                            relative_space_rigth= round(p_right / page_params.width, 2),
                             relative_space_top = round(p_top / page_params.height, 2),
                             relative_height=round((p_bottom - p_top) / page_params.height, 3)
                         ),

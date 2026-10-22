@@ -4,7 +4,7 @@ import sys
 import time
 from pathlib import Path
 from typing import List
-import fitz
+
 
 import webbrowser
 import os
